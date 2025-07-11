@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { X, Info, AlertCircle, ChevronDown, ChevronUp, Search, Filter, Calendar, FileText } from 'lucide-react';
-import { supabase } from '../../services/supabase';
 import Form124View from './Form124View'; 
 import CompensationCalculation from './CompensationCalculation';
 
@@ -826,7 +825,7 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
             </div> 
             {expandedSections.details && (
               <div className="bg-white p-4 rounded-lg border border-gray-200">
-                <Form124View irn={irn} onClose={() => {}} />
+                <Form124View irn={irn} onClose={() => toggleSection('details')} />
               </div>
             )}
           </div>
