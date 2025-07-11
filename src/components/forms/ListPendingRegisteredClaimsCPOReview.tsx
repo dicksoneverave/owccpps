@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
-import CPOClaimReviewForm from './110cpoclaimreviewform';
-import CPODeathClaimReviewForm from './111cpoclaimreviewform';
+import CPOClaimReviewForm from './110cpoclaimreviewform'; // For Injury claims
+import CPODeathClaimReviewForm from './111cpoclaimreviewform'; // For Death claims
 
 interface ListPendingRegisteredClaimsCPOReviewProps {
   onClose: () => void;
@@ -229,7 +229,6 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     // Record is not locked or locked by the current user, proceed
     if (onSelectWorker) {
       onSelectWorker(irn);
-      onClose();
     } else {
       setSelectedIRN(irn);
       if (incidentType === 'Death') {
@@ -237,6 +236,10 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       } else {
         setShowCPOClaimReviewForm(true);
       }
+    }
+    
+    if (onSelectWorker) {
+      onClose();
     }
   };
 
