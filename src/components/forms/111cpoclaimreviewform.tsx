@@ -62,26 +62,6 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
     };
   }, [irn, userStaffID]);
 
-  const fetchUserStaffID = async () => {
-    try {
-      if (!profile?.id) return;
-      
-      const { data: staffData, error: staffError } = await supabase
-        .from('owcstaffmaster')
-        .select('OSMStaffID')
-        .eq('cppsid', profile.id)
-        .maybeSingle();
-        
-      if (staffError) throw staffError;
-      
-      if (staffData && staffData.OSMStaffID) {
-        setUserStaffID(staffData.OSMStaffID.toString());
-      }
-    } catch (err) {
-      console.error('Error fetching user staff ID:', err);
-    }
-  };
-
   useEffect(() => {
     if (profile?.id) {
       fetchUserStaffID();
