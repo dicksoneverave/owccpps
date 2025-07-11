@@ -803,7 +803,7 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
       <div className="bg-white rounded-lg shadow-xl w-full max-w-7xl max-h-[90vh] overflow-y-auto"> 
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
           <h2 className="text-xl font-semibold text-gray-900">
-            {claimData?.IncidentType} Claim Review - {claimData?.DisplayIRN}
+            {claimData?.IncidentType} Claim Reviewx - {claimData?.DisplayIRN}
             {workerData && (
               <span className="ml-2 text-sm font-normal text-gray-600">
                 {workerData.WorkerFirstName} {workerData.WorkerLastName}
