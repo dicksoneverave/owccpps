@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { X, Info, AlertCircle, ChevronDown, ChevronUp, Search, Filter, Calendar, FileText } from 'lucide-react';
-import Form124View from './Form124View'; 
+import React, { useState, useEffect, useCallback } from 'react';
+import { X, AlertCircle, ChevronDown, ChevronUp, Search, Filter, Calendar, FileText } from 'lucide-react';
+import { supabase } from '../../services/supabase';
+import { useAuth } from '../../context/AuthContext';
+import Form124View from './Form124View';
 import CompensationCalculation from './CompensationCalculation';
 
 interface CPOClaimReviewFormProps {
@@ -10,10 +12,12 @@ interface CPOClaimReviewFormProps {
 
 const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose }) => {
   const { profile } = useAuth();
+  const { profile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [claimData, setClaimData] = useState<any>(null);
   const [workerData, setWorkerData] = useState<any>(null); 
+  const [userStaffID, setUserStaffID] = useState<string | null>(null);
   const [userStaffID, setUserStaffID] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({
     details: true,
@@ -39,6 +43,46 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
   // Filter options
   const [statuses, setStatuses] = useState<string[]>([]);
   const [submissionTypes, setSubmissionTypes] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (profile?.id) {
+      fetchUserStaffID();
+    }
+  }, [profile?.id]);
+
+  useEffect(() => {
+    if (userStaffID) {
+      fetchClaimData();
+      checkLockStatus();
+      lockRecord();
+    }
+
+    return () => {
+      if (userStaffID) {
+        unlockRecord();
+      }
+    };
+  }, [irn, userStaffID]);
+
+  const fetchUserStaffID = async () => {
+    try {
+      if (!profile?.id) return;
+      
+      const { data: staffData, error: staffError } = await supabase
+        .from('owcstaffmaster')
+        .select('OSMStaffID')
+        .eq('cppsid', profile.id)
+        .maybeSingle();
+        
+      if (staffError) throw staffError;
+      
+      if (staffData && staffData.OSMStaffID) {
+        setUserStaffID(staffData.OSMStaffID.toString());
+      }
+    } catch (err) {
+      console.error('Error fetching user staff ID:', err);
+    }
+  };
 
   useEffect(() => {
     if (profile?.id) {
@@ -818,14 +862,17 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-lg cursor-pointer" 
                  onClick={() => toggleSection('details')}>
-              <h3 className="text-lg font-semibold text-primary">Claim Details</h3>
+              <h3 className="text-lg font-semibold text-primary">Death Claim Details</h3>
               <button className="text-primary hover:text-primary-dark">
                 {expandedSections.details ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
               </button>
             </div> 
             {expandedSections.details && (
               <div className="bg-white p-4 rounded-lg border border-gray-200">
-                <Form124View irn={irn} onClose={() => toggleSection('details')} />
+                <Form124View 
+                  irn={irn} 
+                  onClose={() => toggleSection('details')} 
+                />
               </div>
             )}
           </div>
