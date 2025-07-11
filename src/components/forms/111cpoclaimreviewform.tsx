@@ -12,12 +12,10 @@ interface CPOClaimReviewFormProps {
 
 const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose }) => {
   const { profile } = useAuth();
-  const { profile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [claimData, setClaimData] = useState<any>(null);
   const [workerData, setWorkerData] = useState<any>(null); 
-  const [userStaffID, setUserStaffID] = useState<string | null>(null);
   const [userStaffID, setUserStaffID] = useState<string | null>(null);
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({
     details: true,
