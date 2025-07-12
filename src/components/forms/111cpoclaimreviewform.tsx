@@ -149,7 +149,6 @@ const CPODeathClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClo
           InsuranceProviderIPACode
         `)
         .eq('IRN', irn)
-        .eq('IncidentType', 'Death')
         .single();
 
       if (claimError) throw claimError;

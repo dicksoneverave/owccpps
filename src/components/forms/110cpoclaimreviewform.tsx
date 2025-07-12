@@ -129,7 +129,6 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
           InsuranceProviderIPACode
         `)
         .eq('IRN', irn)
-        .eq('IncidentType', 'Injury')
         .single();
 
       if (claimError) throw claimError;
