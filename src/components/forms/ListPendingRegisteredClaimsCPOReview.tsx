@@ -4,7 +4,7 @@ import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
 // Import specific form components for each incident type
 //import CPOClaimReviewForm from './110cpoclaimreviewform';       // Specifically for Injury claims
-import CPODeathClaimReviewForm from './111cpoclaimreviewform';  // Specifically for Death claims
+//import CPODeathClaimReviewForm from './111cpoclaimreviewform';  // Specifically for Death claims
 
 interface ListPendingRegisteredClaimsCPOReviewProps {
   onClose: () => void;
