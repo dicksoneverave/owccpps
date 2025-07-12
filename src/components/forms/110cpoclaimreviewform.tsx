@@ -52,13 +52,6 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
 
   useEffect(() => {
     if (userStaffID) {
-      // Validate that both irn and userStaffID are valid before proceeding
-      if (!irn || irn === 'undefined' || !userStaffID || userStaffID === 'undefined') {
-        setLoading(false);
-        setError('Invalid claim reference or user information');
-        return;
-      }
-      
       fetchClaimData();
       checkLockStatus();
       lockRecord();
@@ -116,13 +109,6 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
 
   const fetchClaimData = async () => {
     try {
-      // Validate IRN before making Supabase calls
-      if (!irn || irn === 'undefined') {
-        setError('Invalid claim reference number');
-        setLoading(false);
-        return;
-      }
-      
       setLoading(true);
       
       // Fetch claim data from form1112master
@@ -622,11 +608,6 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
   };
 
   const checkLockStatus = async () => {
-    // Validate parameters before making Supabase calls
-    if (!irn || irn === 'undefined' || !userStaffID || userStaffID === 'undefined') {
-      return;
-    }
-    
     if (!irn || !userStaffID) return;
 
     try {
@@ -688,11 +669,6 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
   };
 
   const lockRecord = async () => {
-    // Validate parameters before making Supabase calls
-    if (!irn || irn === 'undefined' || !userStaffID || userStaffID === 'undefined') {
-      return;
-    }
-    
     if (!userStaffID) return;
     
     try {
@@ -736,11 +712,6 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
   };
 
   const unlockRecord = async () => {
-    // Validate parameters before making Supabase calls
-    if (!irn || irn === 'undefined' || !userStaffID || userStaffID === 'undefined') {
-      return;
-    }
-    
     if (!userStaffID) return;
     
     try {
