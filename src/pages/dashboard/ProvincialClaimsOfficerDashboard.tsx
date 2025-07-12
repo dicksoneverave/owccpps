@@ -117,11 +117,10 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
     setSelectedIRN(irn);
     setSelectedIncidentType(incidentType);
     
-    if (incidentType === 'Injury') {
-      setShowCPOClaimReviewForm(true);
+    if (incidentType === 'Death') {
+      setShowCPODeathClaimReviewForm(true);
     } else {
-      // Handle other incident types if needed
-      console.log(`Selected ${incidentType} claim with IRN: ${irn}`);
+      setShowCPOClaimReviewForm(true);
     }
   };
 
@@ -362,23 +361,23 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
       {/* CPO Claim Review Form Modal */}
       {showCPOClaimReviewForm && selectedIRN && (
         <CPOClaimReviewForm 
-         // irn={selectedIRN}
+          irn={selectedIRN}
           onClose={() => {
             setShowCPOClaimReviewForm(false);
-            //setSelectedIRN(null);
-           // setSelectedIncidentType(null);
+            setSelectedIRN(null);
+            setSelectedIncidentType(null);
           }}
         />
       )}
 
      {/* CPO Death Claim Review Form Modal */}
-      {showCPOClaimReviewForm && selectedIRN && (
+      {showCPODeathClaimReviewForm && selectedIRN && (
         <CPODeathClaimReviewForm 
-         // irn={selectedIRN}
+          irn={selectedIRN}
           onClose={() => {
             setShowCPODeathClaimReviewForm(false);
-           // setSelectedIRN(null);
-            //setSelectedIncidentType(null);
+            setSelectedIRN(null);
+            setSelectedIncidentType(null);
           }}
         />
       )}
