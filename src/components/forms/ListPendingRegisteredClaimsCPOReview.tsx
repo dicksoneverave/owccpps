@@ -243,7 +243,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       console.warn('Unknown incident type:', incidentType);
       // Default to injury form
       setShowCPOClaimReviewForm(true);
-      setShowCPODeathClaimReviewForm(true);
+      setShowCPODeathClaimReviewForm(false);
       console.log('Unknown incident type, defaulting to Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN:', irn);
     }
     
