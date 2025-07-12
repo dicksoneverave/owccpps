@@ -229,7 +229,6 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     
     setSelectedIRN(irn);
     
-    // Explicitly check the incident type and show the appropriate form
     const trimmedIncidentType = incidentType.trim();
     
     if (trimmedIncidentType === 'Death') {
@@ -237,18 +236,11 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
       console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } else if (trimmedIncidentType === 'Injury') {
+    } else {
       // For Injury claims, show the Injury Claim Review Form
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
       console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } else {
-      console.warn(`Unknown incident type: ${incidentType}`);
-      // Don't show any form for unknown incident types
-      setShowCPOClaimReviewForm(false);
-      setShowCPODeathClaimReviewForm(false);
-      alert(`Unknown incident type: ${incidentType}. Cannot process this claim.`);
-      return;
     }
     
     // If using the callback, call it and close the modal
