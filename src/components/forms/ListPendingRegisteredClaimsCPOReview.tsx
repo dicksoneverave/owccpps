@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
-import CPOClaimReviewForm from './110cpoclaimreviewform'; // For Injury claims
-import CPODeathClaimReviewForm from './111cpoclaimreviewform'; // For Death claims
+// Import specific form components for each incident type
+import CPOClaimReviewForm from './110cpoclaimreviewform';       // Specifically for Injury claims
+import CPODeathClaimReviewForm from './111cpoclaimreviewform';  // Specifically for Death claims
 
 interface ListPendingRegisteredClaimsCPOReviewProps {
   onClose: () => void;
@@ -229,22 +230,25 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     setSelectedIRN(irn);
     
     // Explicitly check the incident type and show the appropriate form
-    if (incidentType.trim() === 'Death') {
+    const trimmedIncidentType = incidentType.trim();
+    
+    if (trimmedIncidentType === 'Death') {
       // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
-      console.log('Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN:', irn);
-    } else if (incidentType.trim() === 'Injury') {
+      console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
+    } else if (trimmedIncidentType === 'Injury') {
       // For Injury claims, show the Injury Claim Review Form
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
-      console.log('Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN:', irn);
+      console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
     } else {
-      console.warn('Unknown incident type:', incidentType);
-      // Default to injury form
-      setShowCPOClaimReviewForm(true);
+      console.warn(`Unknown incident type: ${incidentType}`);
+      // Don't show any form for unknown incident types
+      setShowCPOClaimReviewForm(false);
       setShowCPODeathClaimReviewForm(false);
-      console.log('Unknown incident type, defaulting to Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN:', irn);
+      alert(`Unknown incident type: ${incidentType}. Cannot process this claim.`);
+      return;
     }
     
     // If using the callback, call it and close the modal
@@ -485,8 +489,8 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       </div>
 
       {/* CPO Claim Review Form Modal */}
-      {showCPOClaimReviewForm && !showCPODeathClaimReviewForm && selectedIRN && (
-        <CPODeathClaimReviewForm 
+      {showCPOClaimReviewForm && selectedIRN && (
+        <CPOClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
             setShowCPOClaimReviewForm(false);
@@ -497,7 +501,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       )}
 
       {/* CPO Death Claim Review Form Modal */}
-      {showCPODeathClaimReviewForm && !showCPOClaimReviewForm && selectedIRN && (
+      {showCPODeathClaimReviewForm && selectedIRN && (
         <CPODeathClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {

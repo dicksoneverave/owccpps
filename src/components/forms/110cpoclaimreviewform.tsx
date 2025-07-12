@@ -5,11 +5,13 @@ import { useAuth } from '../../context/AuthContext';
 import Form113View from './Form113View'; 
 import CompensationCalculation from './CompensationCalculation';
 
+
 interface CPOClaimReviewFormProps {
   irn: string;
   onClose: () => void;
 }
 
+// This component is specifically for Injury claims only
 const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose }) => {
   const { profile } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -123,10 +125,11 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
           IncidentRegion,
           NatureExtentInjury,
           InjuryCause,
-          HandInjury,
+          HandInjury, 
           InsuranceProviderIPACode
         `)
         .eq('IRN', irn)
+        .eq('IncidentType', 'Injury')
         .single();
 
       if (claimError) throw claimError;
@@ -803,7 +806,7 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
       <div className="bg-white rounded-lg shadow-xl w-full max-w-7xl max-h-[90vh] overflow-y-auto"> 
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
           <h2 className="text-xl font-semibold text-gray-900">
-            {claimData?.IncidentType} Claim Reviewx - {claimData?.DisplayIRN}
+            Injury Claim Review - {claimData?.DisplayIRN}
             {workerData && (
               <span className="ml-2 text-sm font-normal text-gray-600">
                 {workerData.WorkerFirstName} {workerData.WorkerLastName}
