@@ -841,7 +841,7 @@ const CPODeathClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClo
           {/* Form124View Section */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-lg cursor-pointer" 
-                 onClick={() => toggleSection('details')}>
+                onClick={() => toggleSection('details')}>
               <h3 className="text-lg font-semibold text-primary">Death Claim Details</h3>
               <button className="text-primary hover:text-primary-dark">
                 {expandedSections.details ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
@@ -849,10 +849,7 @@ const CPODeathClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClo
             </div> 
             {expandedSections.details && (
               <div className="bg-white p-4 rounded-lg border border-gray-200">
-                <Form124View 
-                  irn={irn} 
-                  onClose={() => toggleSection('details')} 
-                />
+                <Form124View irn={irn} onClose={() => toggleSection('details')} />
               </div>
             )}
           </div>
