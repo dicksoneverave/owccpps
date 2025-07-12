@@ -357,17 +357,6 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
         />
       )}
 
-      {/* CPO Claim Review Form Modal */}
-      {showCPOClaimReviewForm && selectedIRN && (
-        <CPOClaimReviewForm 
-          irn={selectedIRN}
-          onClose={() => {
-            setShowCPOClaimReviewForm(false);
-            setSelectedIRN(null);
-            setSelectedIncidentType(null);
-          }}
-        />
-      )}
     </div>
   );
 };
