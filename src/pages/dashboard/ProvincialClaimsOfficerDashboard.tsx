@@ -9,6 +9,7 @@ import ListForm18WorkerResponse from '../../components/forms/ListForm18WorkerRes
 import ListForm17 from '../../components/forms/ListForm17';
 import ListForm7 from '../../components/forms/ListForm7';
 import CPOClaimReviewForm from '../../components/forms/110cpoclaimreviewform';
+import CPODeathClaimReviewForm from '../../components/forms/111cpoclaimreviewform'; 
 
 const ProvincialClaimsOfficerDashboard: React.FC = () => {
   const { profile } = useAuth();
@@ -20,6 +21,7 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
   const [showForm17List, setShowForm17List] = useState(false);
   const [showForm7List, setShowForm7List] = useState(false);
   const [showCPOClaimReviewForm, setShowCPOClaimReviewForm] = useState(false);
+  const [showCPODeathClaimReviewForm, setShowCPODeathClaimReviewForm] = useState(false);
   const [selectedIRN, setSelectedIRN] = useState<string | null>(null);
   const [selectedIncidentType, setSelectedIncidentType] = useState<string | null>(null);
   const [userRegion, setUserRegion] = useState<string | null>(null);
@@ -356,7 +358,18 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
           onClose={() => setShowForm7List(false)}
         />
       )}
-
+ 
+      {/* CPO Claim Review Form Modal */}
+      {showCPOClaimReviewForm && selectedIRN && (
+        <CPOClaimReviewForm 
+          irn={selectedIRN}
+          onClose={() => {
+            setShowCPOClaimReviewForm(false);
+            setSelectedIRN(null);
+            setSelectedIncidentType(null);
+          }}
+        />
+      )}
     </div>
   );
 };
