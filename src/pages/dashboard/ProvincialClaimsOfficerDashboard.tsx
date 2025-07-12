@@ -22,8 +22,8 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
   const [showForm7List, setShowForm7List] = useState(false);
   const [showCPOClaimReviewForm, setShowCPOClaimReviewForm] = useState(false);
   const [showCPODeathClaimReviewForm, setShowCPODeathClaimReviewForm] = useState(false);
-  const [selectedIRN, setSelectedIRN] = useState<string | null>(null);
-  const [selectedIncidentType, setSelectedIncidentType] = useState<string | null>(null);
+  const [selectedIRN, setSelectedIRN] = useState<string | null>(null); 
+  const [selectedIncidentType, setSelectedIncidentType] = useState<string | null>(null); 
   const [userRegion, setUserRegion] = useState<string | null>(null);
   const [userFullName, setUserFullName] = useState<string | null>(null);
   const [userStaffID, setUserStaffID] = useState<string | null>(null);
@@ -113,14 +113,18 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
     setActiveMenu(null);
   };
 
-  const handleWorkerSelect = (irn: string, incidentType: string = 'Injury') => {
+  const handleWorkerSelect = (irn: string, incidentType: string) => {
     setSelectedIRN(irn);
     setSelectedIncidentType(incidentType);
     
     if (incidentType === 'Death') {
       setShowCPODeathClaimReviewForm(true);
+      setShowCPOClaimReviewForm(false);
+      console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
     } else {
       setShowCPOClaimReviewForm(true);
+      setShowCPODeathClaimReviewForm(false);
+      console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
     }
   }; 
 
