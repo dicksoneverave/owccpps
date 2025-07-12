@@ -482,15 +482,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
 
 
 
-      {/* CPO Death Claim Review Form Modal */}
-      {showCPODeathClaimReviewForm && selectedIRN && (
-        <CPODeathClaimReviewForm 
-          irn={selectedIRN}
-          onClose={() => {
-            setShowCPODeathClaimReviewForm(false);
-            setSelectedIRN(null);
-            fetchClaimsList(); // Refresh the list after closing
-          }}
+
         />
       )}
     </div>
