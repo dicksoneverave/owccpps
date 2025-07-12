@@ -150,18 +150,26 @@ const CPODeathClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClo
         `)
         .eq('IRN', irn)
         .eq('IncidentType', 'Death')
-        .single();
+        .maybeSingle();
 
       if (claimError) throw claimError;
+      
+      if (!claimData) {
+        throw new Error('Death claim data not found for this IRN');
+      }
 
       // Fetch worker details
       const { data: workerData, error: workerError } = await supabase
         .from('workerpersonaldetails')
         .select('*')
         .eq('WorkerID', claimData.WorkerID)
-        .single();
+        .maybeSingle();
 
       if (workerError) throw workerError;
+      
+      if (!workerData) {
+        throw new Error('Worker data not found for this claim');
+      }
 
       setClaimData(claimData);
       setWorkerData(workerData);
