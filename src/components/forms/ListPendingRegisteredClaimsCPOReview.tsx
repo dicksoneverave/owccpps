@@ -3,8 +3,8 @@ import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
 // Import specific form components for each incident type
-//import CPOClaimReviewForm from './110cpoclaimreviewform';       // Specifically for Injury claims
-//import CPODeathClaimReviewForm from './111cpoclaimreviewform';  // Specifically for Death claims
+import CPOClaimReviewForm from './110cpoclaimreviewform';       // Specifically for Injury claims
+import CPODeathClaimReviewForm from './111cpoclaimreviewform';  // Specifically for Death claims
 
 interface ListPendingRegisteredClaimsCPOReviewProps {
   onClose: () => void;
@@ -231,7 +231,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     
     const trimmedIncidentType = incidentType.trim();
     
-  /*  if (trimmedIncidentType === 'Death') {
+   if (trimmedIncidentType === 'Death') {
       // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
@@ -241,7 +241,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
       console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } */
+    } 
     
     // If using the callback, call it and close the modal
     if (onSelectWorker) {
@@ -480,6 +480,31 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
         </div>
       </div>
 
+{/* CPO Claim Review Form Modal */}
+      {showCPOClaimReviewForm && selectedIRN && (
+        <CPOClaimReviewForm 
+          irn={selectedIRN}
+          onClose={() => {
+            setShowCPOClaimReviewForm(false);
+            setSelectedIRN(null);
+            fetchClaimsList(); // Refresh the list after closing
+          }}
+        />
+      )}
+
+
+
+      {/* CPO Death Claim Review Form Modal */}
+      {showCPODeathClaimReviewForm && selectedIRN && (
+        <CPODeathClaimReviewForm 
+          irn={selectedIRN}
+          onClose={() => {
+            setShowCPODeathClaimReviewForm(false);
+            setSelectedIRN(null);
+            fetchClaimsList(); // Refresh the list after closing
+          }}
+   />
+)}
 
 
 
