@@ -231,7 +231,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     // Explicitly check the incident type and show the appropriate form
     if (incidentType.trim() === 'Death') {
       // For Death claims, show the Death Claim Review Form
-      setShowCPODeathClaimReviewForm(true);
+      setShowCPODeathClaimReviewForm(false);
       setShowCPOClaimReviewForm(false);
       console.log('Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN:', irn);
     } else if (incidentType.trim() === 'Injury') {
