@@ -231,7 +231,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     
     const trimmedIncidentType = incidentType.trim();
     
-    if (trimmedIncidentType === 'Death') {
+  /*  if (trimmedIncidentType === 'Death') {
       // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
@@ -241,7 +241,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
       console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    }
+    } */
     
     // If using the callback, call it and close the modal
     if (onSelectWorker) {
