@@ -357,6 +357,20 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
           onClose={() => setShowForm7List(false)}
         />
       )}
+
+     {showCPOClaimReviewForm && (
+        <CPOClaimReviewForm 
+            onClose={() => {
+            setShowCPOClaimReviewForm(false);}
+        />
+      )}
+
+         {showCPODeathClaimReviewForm && (
+        <CPODeathClaimReviewForm 
+            onClose={() => {
+            setShowCPODeathClaimReviewForm(false);}
+        />
+      )}
  
       {/* CPO Claim Review Form Modal */}
       {/*showCPOClaimReviewForm && selectedIRN && (
