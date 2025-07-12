@@ -229,15 +229,15 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     
     setSelectedIRN(irn);
     
-    // Explicitly check the incident type and show the appropriate form
-    const trimmedIncidentType = incidentType.trim();
+    // Case-insensitive check for incident type and show the appropriate form
+    const normalizedIncidentType = incidentType.trim().toLowerCase();
     
-    if (trimmedIncidentType === 'Death') {
+    if (normalizedIncidentType.includes('death')) {
       // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
       console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } else if (trimmedIncidentType === 'Injury') {
+    } else if (normalizedIncidentType.includes('injury')) {
       // For Injury claims, show the Injury Claim Review Form
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
