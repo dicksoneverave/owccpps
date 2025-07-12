@@ -135,7 +135,9 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
       if (claimError) throw claimError;
       
       if (!claimData) {
-        throw new Error('Injury claim data not found for this IRN');
+        console.log('Injury claim data not found for this IRN, closing modal');
+        onClose();
+        return;
       }
 
       // Fetch worker details
@@ -148,7 +150,9 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
       if (workerError) throw workerError;
       
       if (!workerData) {
-        throw new Error('Worker data not found for this claim');
+        console.log('Worker data not found for this claim, closing modal');
+        onClose();
+        return;
       }
 
       setClaimData(claimData);
