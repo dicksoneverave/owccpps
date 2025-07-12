@@ -113,7 +113,7 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
     setActiveMenu(null);
   };
 
-  const handleWorkerSelect = (irn: string, incidentType: string = 'Injury') => {
+  const handleWorkerSelect = (irn: string, incidentType: string = 'Death') => {
     setSelectedIRN(irn);
     setSelectedIncidentType(incidentType);
     
