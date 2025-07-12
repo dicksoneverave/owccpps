@@ -113,7 +113,7 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
     setActiveMenu(null);
   };
 
-/*  const handleWorkerSelect = (irn: string, incidentType: string = 'Injury') => {
+  const handleWorkerSelect = (irn: string, incidentType: string = 'Injury') => {
     setSelectedIRN(irn);
     setSelectedIncidentType(incidentType);
     
@@ -122,7 +122,7 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
     } else {
       setShowCPOClaimReviewForm(true);
     }
-  }; */
+  }; 
 
   return (
     <div className="py-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
