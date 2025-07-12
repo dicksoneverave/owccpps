@@ -483,7 +483,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
 
 
 
-        />
+     
       )}
     </div>
   );
