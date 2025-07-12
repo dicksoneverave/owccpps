@@ -360,15 +360,13 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
 
      {showCPOClaimReviewForm && (
         <CPOClaimReviewForm 
-            onClose={() => {
-            setShowCPOClaimReviewForm(false);}
+            onClose={() => setShowCPOClaimReviewForm(false);}
         />
       )}
 
          {showCPODeathClaimReviewForm && (
         <CPODeathClaimReviewForm 
-            onClose={() => {
-            setShowCPODeathClaimReviewForm(false);}
+            onClose={() => setShowCPODeathClaimReviewForm(false);}
         />
       )}
  
