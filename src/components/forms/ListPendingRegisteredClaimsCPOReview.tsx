@@ -486,7 +486,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
 
       {/* CPO Claim Review Form Modal */}
       {showCPOClaimReviewForm && !showCPODeathClaimReviewForm && selectedIRN && (
-        <CPOClaimReviewForm 
+        <CPODeathClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
             setShowCPOClaimReviewForm(false);
