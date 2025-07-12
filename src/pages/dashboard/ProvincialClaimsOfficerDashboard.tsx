@@ -370,6 +370,19 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
           }}
         />
       )}
+
+     {/* CPO Death Claim Review Form Modal */}
+      {showCPOClaimReviewForm && selectedIRN && (
+        <CPODeathClaimReviewForm 
+          irn={selectedIRN}
+          onClose={() => {
+            setShowCPODeathClaimReviewForm(false);
+            setSelectedIRN(null);
+            setSelectedIncidentType(null);
+          }}
+        />
+      )}
+      
     </div>
   );
 };
