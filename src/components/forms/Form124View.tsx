@@ -5,7 +5,7 @@ import { supabase } from '../../services/supabase';
 
 interface Form124ViewProps {
   irn: string;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const Form124View: React.FC<Form124ViewProps> = ({ irn, onClose }) => {
@@ -18,7 +18,7 @@ const Form124View: React.FC<Form124ViewProps> = ({ irn, onClose }) => {
   const handleClose = useCallback(() => {
     if (onClose) {
       onClose();
-    } 
+    }
   }, [onClose]);
   
   const [workHistory, setWorkHistory] = useState<any[]>([]);
@@ -1054,7 +1054,7 @@ const Form124View: React.FC<Form124ViewProps> = ({ irn, onClose }) => {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-xl w-full">
+    <div className="bg-white rounded-lg w-full">
       <div className="flex border-b bg-gray-50">
         <div className="flex overflow-x-auto p-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
           {tabs.map((tab, index) => (
@@ -1075,33 +1075,6 @@ const Form124View: React.FC<Form124ViewProps> = ({ irn, onClose }) => {
 
       <div className="p-6">
         {renderTabContent()}
-      </div>
-
-      <div className="border-t p-4 bg-gray-50 flex justify-between">
-        <button
-          onClick={() => setCurrentTab(prev => Math.max(prev - 1, 1))}
-          disabled={currentTab === 1}
-          className={`btn ${currentTab === 1 ? 'btn-secondary opacity-50 cursor-not-allowed' : 'btn-secondary'} flex items-center`}
-        >
-          <ChevronLeft className="h-4 w-4 mr-2" />
-          Previous
-        </button>
-        
-        <button
-          onClick={handleClose} 
-          className="btn btn-primary"
-        >
-          Close
-        </button>
-        
-        <button
-          onClick={() => setCurrentTab(prev => Math.min(prev + 1, tabs.length))}
-          disabled={currentTab === tabs.length}
-          className={`btn ${currentTab === tabs.length ? 'btn-secondary opacity-50 cursor-not-allowed' : 'btn-secondary'} flex items-center`}
-        >
-          Next
-          <ChevronRight className="h-4 w-4 ml-2" />
-        </button>
       </div>
     </div>
   );

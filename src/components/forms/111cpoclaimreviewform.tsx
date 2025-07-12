@@ -849,7 +849,7 @@ const CPODeathClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClo
             </div> 
             {expandedSections.details && (
               <div className="bg-white p-4 rounded-lg border border-gray-200">
-                <Form124View irn={irn} onClose={() => toggleSection('details')} />
+                <Form124View irn={irn} />
               </div>
             )}
           </div>
