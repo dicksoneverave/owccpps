@@ -228,16 +228,21 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     }
     
     setSelectedIRN(irn);
-    
     const trimmedIncidentType = incidentType.trim();
     
-   if (trimmedIncidentType === 'Death') {
+    if (trimmedIncidentType === 'Death') {
       // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
       console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } else {
+    } else if (trimmedIncidentType === 'Injury') {
       // For Injury claims, show the Injury Claim Review Form
+      setShowCPOClaimReviewForm(true);
+      setShowCPODeathClaimReviewForm(false);
+      console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
+    } else {
+      // For any other incident type, default to Injury form
+      console.warn(`Unknown incident type: ${trimmedIncidentType}, defaulting to Injury Claim Review Form`);
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
       console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
@@ -483,10 +488,11 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
 {/* CPO Claim Review Form Modal */}
       {showCPOClaimReviewForm && selectedIRN && (
         <CPOClaimReviewForm 
-          irn={selectedIRN}
+          irn={selectedIRN} 
           onClose={() => {
             setShowCPOClaimReviewForm(false);
             setSelectedIRN(null);
+            fetchClaimsList(); // Refresh the list after closing
             fetchClaimsList(); // Refresh the list after closing
           }}
         />
@@ -497,10 +503,11 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       {/* CPO Death Claim Review Form Modal */}
       {showCPODeathClaimReviewForm && selectedIRN && (
         <CPODeathClaimReviewForm 
-          irn={selectedIRN}
+          irn={selectedIRN} 
           onClose={() => {
             setShowCPODeathClaimReviewForm(false);
             setSelectedIRN(null);
+            fetchClaimsList(); // Refresh the list after closing
             fetchClaimsList(); // Refresh the list after closing
           }}
    />
