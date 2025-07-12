@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
-import CPOClaimReviewForm from './110cpoclaimreviewform';
-import CPODeathClaimReviewForm from './111cpoclaimreviewform';
+import CPOClaimReviewForm from './110cpoclaimreviewform'; // For Injury claims
+import CPODeathClaimReviewForm from './111cpoclaimreviewform'; // For Death claims
 
 interface ListPendingRegisteredClaimsCPOReviewProps {
   onClose: () => void;
@@ -226,14 +226,16 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       return;
     }
     
-    // Set the selected IRN
     setSelectedIRN(irn);
     
-    // Determine which form to show based on incident type
     if (incidentType === 'Death') {
+      // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
+      setShowCPOClaimReviewForm(false);
     } else {
+      // For Injury claims, show the Injury Claim Review Form
       setShowCPOClaimReviewForm(true);
+      setShowCPODeathClaimReviewForm(false);
     }
     
     // If using the callback, call it and close the modal
@@ -474,7 +476,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       </div>
 
       {/* CPO Claim Review Form Modal */}
-      {showCPOClaimReviewForm && selectedIRN && !showCPODeathClaimReviewForm && (
+      {showCPOClaimReviewForm && selectedIRN && (
         <CPOClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
