@@ -228,12 +228,20 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     
     setSelectedIRN(irn);
     
-    if (incidentType === 'Death') {
+    // Explicitly check the incident type and show the appropriate form
+    if (incidentType.trim() === 'Death') {
       // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
-    } else {
+      console.log('Showing Death Claim Review Form for IRN:', irn);
+    } else if (incidentType.trim() === 'Injury') {
       // For Injury claims, show the Injury Claim Review Form
+      setShowCPOClaimReviewForm(true);
+      setShowCPODeathClaimReviewForm(false);
+      console.log('Showing Injury Claim Review Form for IRN:', irn);
+    } else {
+      console.warn('Unknown incident type:', incidentType);
+      // Default to injury form
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
     }
@@ -476,7 +484,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       </div>
 
       {/* CPO Claim Review Form Modal */}
-      {showCPOClaimReviewForm && selectedIRN && (
+      {showCPOClaimReviewForm && !showCPODeathClaimReviewForm && selectedIRN && (
         <CPOClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
@@ -488,7 +496,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       )}
 
       {/* CPO Death Claim Review Form Modal */}
-      {showCPODeathClaimReviewForm && selectedIRN && (
+      {showCPODeathClaimReviewForm && !showCPOClaimReviewForm && selectedIRN && (
         <CPODeathClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
