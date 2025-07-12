@@ -8,8 +8,8 @@ import ListForm18EmployerAccepted from '../../components/forms/ListForm18Employe
 import ListForm18WorkerResponse from '../../components/forms/ListForm18WorkerResponse';
 import ListForm17 from '../../components/forms/ListForm17';
 import ListForm7 from '../../components/forms/ListForm7';
-import CPOClaimReviewForm from '../../components/forms/110cpoclaimreviewform';
-import CPODeathClaimReviewForm from '../../components/forms/111cpoclaimreviewform'; 
+//import CPOClaimReviewForm from '../../components/forms/110cpoclaimreviewform';
+//import CPODeathClaimReviewForm from '../../components/forms/111cpoclaimreviewform'; 
 
 const ProvincialClaimsOfficerDashboard: React.FC = () => {
   const { profile } = useAuth();
