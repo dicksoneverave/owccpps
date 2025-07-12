@@ -362,11 +362,11 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
       {/* CPO Claim Review Form Modal */}
       {showCPOClaimReviewForm && selectedIRN && (
         <CPOClaimReviewForm 
-          irn={selectedIRN}
+         // irn={selectedIRN}
           onClose={() => {
             setShowCPOClaimReviewForm(false);
-            setSelectedIRN(null);
-            setSelectedIncidentType(null);
+            //setSelectedIRN(null);
+           // setSelectedIncidentType(null);
           }}
         />
       )}
@@ -374,11 +374,11 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
      {/* CPO Death Claim Review Form Modal */}
       {showCPOClaimReviewForm && selectedIRN && (
         <CPODeathClaimReviewForm 
-          irn={selectedIRN}
+         // irn={selectedIRN}
           onClose={() => {
             setShowCPODeathClaimReviewForm(false);
-            setSelectedIRN(null);
-            setSelectedIncidentType(null);
+           // setSelectedIRN(null);
+            //setSelectedIncidentType(null);
           }}
         />
       )}
