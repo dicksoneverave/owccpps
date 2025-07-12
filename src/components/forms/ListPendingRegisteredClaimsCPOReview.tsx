@@ -231,18 +231,18 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     // Explicitly check the incident type and show the appropriate form
     if (incidentType.trim() === 'Death') {
       // For Death claims, show the Death Claim Review Form
-      setShowCPODeathClaimReviewForm(false);
+      setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
       console.log('Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN:', irn);
     } else if (incidentType.trim() === 'Injury') {
       // For Injury claims, show the Injury Claim Review Form
-      setShowCPOClaimReviewForm(false);
+      setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
       console.log('Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN:', irn);
     } else {
       console.warn('Unknown incident type:', incidentType);
       // Default to injury form
-      setShowCPOClaimReviewForm(false);
+      setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(true);
       console.log('Unknown incident type, defaulting to Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN:', irn);
     }
