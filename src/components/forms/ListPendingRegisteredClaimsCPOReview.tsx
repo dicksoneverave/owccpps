@@ -39,8 +39,8 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
   const [totalPages, setTotalPages] = useState(1);
   const [recordsPerPage] = useState(20);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [showCPOClaimReviewForm, setShowCPOClaimReviewForm] = useState(false);
-  const [showCPODeathClaimReviewForm, setShowCPODeathClaimReviewForm] = useState(false);
+  const [showCPOClaimReviewForm, setShowCPOClaimReviewForm] = useState<boolean>(false);
+  const [showCPODeathClaimReviewForm, setShowCPODeathClaimReviewForm] = useState<boolean>(false);
   const [selectedIRN, setSelectedIRN] = useState<string | null>(null);
   const [userRegion, setUserRegion] = useState<string | null>(null);
   const [userStaffID, setUserStaffID] = useState<string | null>(null);
@@ -228,21 +228,15 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     }
     
     setSelectedIRN(irn);
-    const trimmedIncidentType = incidentType.trim();
+    console.log(`View clicked for IRN: ${irn}, Incident Type: ${incidentType}`);
     
-    if (trimmedIncidentType === 'Death') {
+    if (incidentType.trim() === 'Death') {
       // For Death claims, show the Death Claim Review Form
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
       console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } else if (trimmedIncidentType === 'Injury') {
-      // For Injury claims, show the Injury Claim Review Form
-      setShowCPOClaimReviewForm(true);
-      setShowCPODeathClaimReviewForm(false);
-      console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
     } else {
-      // For any other incident type, default to Injury form
-      console.warn(`Unknown incident type: ${trimmedIncidentType}, defaulting to Injury Claim Review Form`);
+      // For Injury claims, show the Injury Claim Review Form
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
       console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
@@ -485,7 +479,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
         </div>
       </div>
 
-{/* CPO Claim Review Form Modal */}
+      {/* CPO Claim Review Form Modal */}
       {showCPOClaimReviewForm && selectedIRN && (
         <CPOClaimReviewForm 
           irn={selectedIRN} 
@@ -493,12 +487,9 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
             setShowCPOClaimReviewForm(false);
             setSelectedIRN(null);
             fetchClaimsList(); // Refresh the list after closing
-            fetchClaimsList(); // Refresh the list after closing
           }}
         />
       )}
-
-
 
       {/* CPO Death Claim Review Form Modal */}
       {showCPODeathClaimReviewForm && selectedIRN && (
@@ -508,15 +499,9 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
             setShowCPODeathClaimReviewForm(false);
             setSelectedIRN(null);
             fetchClaimsList(); // Refresh the list after closing
-            fetchClaimsList(); // Refresh the list after closing
           }}
-   />
-)}
-
-
-
-     
-      
+        />
+      )}
     </div>
   );
 };
