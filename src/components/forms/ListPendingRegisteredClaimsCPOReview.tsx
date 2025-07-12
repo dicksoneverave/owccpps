@@ -39,8 +39,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
   const [totalPages, setTotalPages] = useState(1);
   const [recordsPerPage] = useState(20);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [showCPOClaimReviewForm, setShowCPOClaimReviewForm] = useState(false);
-  const [showCPODeathClaimReviewForm, setShowCPODeathClaimReviewForm] = useState(false);
+  const [activeForm, setActiveForm] = useState<'injury' | 'death' | null>(null);
   const [selectedIRN, setSelectedIRN] = useState<string | null>(null);
   const [userRegion, setUserRegion] = useState<string | null>(null);
   const [userStaffID, setUserStaffID] = useState<string | null>(null);
@@ -229,24 +228,21 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     
     setSelectedIRN(irn);
     
-    // Case-insensitive check for incident type and show the appropriate form
+    // Case-insensitive check for incident type and set the appropriate form
     const normalizedIncidentType = incidentType.trim().toLowerCase();
     
     if (normalizedIncidentType.includes('death')) {
       // For Death claims, show the Death Claim Review Form
-      setShowCPODeathClaimReviewForm(true);
-      setShowCPOClaimReviewForm(false);
+      setActiveForm('death');
       console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
     } else if (normalizedIncidentType.includes('injury')) {
       // For Injury claims, show the Injury Claim Review Form
-      setShowCPOClaimReviewForm(true);
-      setShowCPODeathClaimReviewForm(false);
+      setActiveForm('injury');
       console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
     } else {
       console.warn(`Unknown incident type: ${incidentType}`);
-      // Don't show any form for unknown incident types
-      setShowCPOClaimReviewForm(false);
-      setShowCPODeathClaimReviewForm(false);
+      // Don't set any form for unknown incident types
+      setActiveForm(null);
       alert(`Unknown incident type: ${incidentType}. Cannot process this claim.`);
       return;
     }
@@ -488,24 +484,24 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
         </div>
       </div>
 
-      {/* CPO Claim Review Form Modal */}
-      {showCPOClaimReviewForm && selectedIRN && (
+      {/* CPO Claim Review Form Modal - Only for Injury claims */}
+      {activeForm === 'injury' && selectedIRN && (
         <CPOClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
-            setShowCPOClaimReviewForm(false);
+            setActiveForm(null);
             setSelectedIRN(null);
             fetchClaimsList(); // Refresh the list after closing
           }}
         />
       )}
 
-      {/* CPO Death Claim Review Form Modal */}
-      {showCPODeathClaimReviewForm && selectedIRN && (
+      {/* CPO Death Claim Review Form Modal - Only for Death claims */}
+      {activeForm === 'death' && selectedIRN && (
         <CPODeathClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
-            setShowCPODeathClaimReviewForm(false);
+            setActiveForm(null);
             setSelectedIRN(null);
             fetchClaimsList(); // Refresh the list after closing
           }}
