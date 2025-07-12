@@ -130,30 +130,18 @@ const CPOClaimReviewForm: React.FC<CPOClaimReviewFormProps> = ({ irn, onClose })
         `)
         .eq('IRN', irn)
         .eq('IncidentType', 'Injury')
-        .maybeSingle();
+        .single();
 
       if (claimError) throw claimError;
-      
-      if (!claimData) {
-        console.log('Injury claim data not found for this IRN, closing modal');
-        onClose();
-        return;
-      }
 
       // Fetch worker details
       const { data: workerData, error: workerError } = await supabase
         .from('workerpersonaldetails')
         .select('*')
         .eq('WorkerID', claimData.WorkerID)
-        .maybeSingle();
+        .single();
 
       if (workerError) throw workerError;
-      
-      if (!workerData) {
-        console.log('Worker data not found for this claim, closing modal');
-        onClose();
-        return;
-      }
 
       setClaimData(claimData);
       setWorkerData(workerData);
