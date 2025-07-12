@@ -40,6 +40,7 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
       items: []
     },
     'Form7': {
+      items: []
     }
   };
 
