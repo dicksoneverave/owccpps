@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
-import CPOClaimReviewForm from './110cpoclaimreviewform'; // For Injury claims
-import CPODeathClaimReviewForm from './111cpoclaimreviewform'; // For Death claims
+import CPOClaimReviewForm from './110cpoclaimreviewform';
+import CPODeathClaimReviewForm from './111cpoclaimreviewform';
 
 interface ListPendingRegisteredClaimsCPOReviewProps {
   onClose: () => void;
@@ -226,19 +226,19 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       return;
     }
     
-    // Record is not locked or locked by the current user, proceed
-    if (onSelectWorker) {
-      onSelectWorker(irn);
+    // Set the selected IRN
+    setSelectedIRN(irn);
+    
+    // Determine which form to show based on incident type
+    if (incidentType === 'Death') {
+      setShowCPODeathClaimReviewForm(true);
     } else {
-      setSelectedIRN(irn);
-      if (incidentType === 'Death') {
-        setShowCPODeathClaimReviewForm(true);
-      } else {
-        setShowCPOClaimReviewForm(true);
-      }
+      setShowCPOClaimReviewForm(true);
     }
     
+    // If using the callback, call it and close the modal
     if (onSelectWorker) {
+      onSelectWorker(irn);
       onClose();
     }
   };
@@ -474,12 +474,13 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       </div>
 
       {/* CPO Claim Review Form Modal */}
-      {showCPOClaimReviewForm && selectedIRN && (
+      {showCPOClaimReviewForm && selectedIRN && !showCPODeathClaimReviewForm && (
         <CPOClaimReviewForm 
           irn={selectedIRN}
           onClose={() => {
             setShowCPOClaimReviewForm(false);
             setSelectedIRN(null);
+            fetchClaimsList(); // Refresh the list after closing
           }}
         />
       )}
@@ -491,6 +492,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
           onClose={() => {
             setShowCPODeathClaimReviewForm(false);
             setSelectedIRN(null);
+            fetchClaimsList(); // Refresh the list after closing
           }}
         />
       )}
