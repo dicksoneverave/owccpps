@@ -236,7 +236,7 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
       console.log('Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN:', irn);
     } else if (incidentType.trim() === 'Injury') {
       // For Injury claims, show the Injury Claim Review Form
-      setShowCPOClaimReviewForm(true);
+      setShowCPOClaimReviewForm(false);
       setShowCPODeathClaimReviewForm(false);
       console.log('Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN:', irn);
     } else {
