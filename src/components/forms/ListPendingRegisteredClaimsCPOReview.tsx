@@ -8,7 +8,7 @@ import CPODeathClaimReviewForm from './111cpoclaimreviewform';  // Specifically 
 
 interface ListPendingRegisteredClaimsCPOReviewProps {
   onClose: () => void;
-  onSelectWorker?: (workerId: string) => void;
+  onSelectWorker?: (workerId: string, incidentType: string) => void;
 }
 
 interface ClaimData {
@@ -230,22 +230,22 @@ const ListPendingRegisteredClaimsCPOReview: React.FC<ListPendingRegisteredClaims
     setSelectedIRN(irn);
     console.log(`View clicked for IRN: ${irn}, Incident Type: ${incidentType}`);
     
-    if (incidentType.trim() === 'Death') {
-      // For Death claims, show the Death Claim Review Form
-      setShowCPODeathClaimReviewForm(true);
-      setShowCPOClaimReviewForm(false);
-      console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } else {
-      // For Injury claims, show the Injury Claim Review Form
-      setShowCPOClaimReviewForm(true);
-      setShowCPODeathClaimReviewForm(false);
-      console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
-    } 
-    
     // If using the callback, call it and close the modal
     if (onSelectWorker) {
-      onSelectWorker(irn);
+      onSelectWorker(irn, incidentType);
       onClose();
+    } else {
+      if (incidentType.trim() === 'Death') {
+        // For Death claims, show the Death Claim Review Form
+        setShowCPODeathClaimReviewForm(true);
+        setShowCPOClaimReviewForm(false);
+        console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
+      } else {
+        // For Injury claims, show the Injury Claim Review Form
+        setShowCPOClaimReviewForm(true);
+        setShowCPODeathClaimReviewForm(false);
+        console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
+      }
     }
   };
 

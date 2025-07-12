@@ -40,7 +40,6 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
       items: []
     },
     'Form7': {
-      items: []
     }
   };
 
@@ -116,12 +115,14 @@ const ProvincialClaimsOfficerDashboard: React.FC = () => {
   const handleWorkerSelect = (irn: string, incidentType: string) => {
     setSelectedIRN(irn);
     setSelectedIncidentType(incidentType);
+    console.log(`Parent received IRN: ${irn}, Incident Type: ${incidentType}`);
     
     if (incidentType === 'Death') {
+      console.log('Setting up Death Claim Review Form');
       setShowCPODeathClaimReviewForm(true);
       setShowCPOClaimReviewForm(false);
-      console.log(`Showing Death Claim Review Form (111cpoclaimreviewform.tsx) for IRN: ${irn}`);
     } else {
+      console.log('Setting up Injury Claim Review Form');
       setShowCPOClaimReviewForm(true);
       setShowCPODeathClaimReviewForm(false);
       console.log(`Showing Injury Claim Review Form (110cpoclaimreviewform.tsx) for IRN: ${irn}`);
