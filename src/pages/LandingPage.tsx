@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { supabase, checkSupabaseConnection } from '../services/supabase';
-import { Pie, Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -16,6 +15,7 @@ import {
   Legend,
   ChartData
 } from 'chart.js';
+import { Pie, Bar, Line } from 'react-chartjs-2';
 
 // Register ChartJS components
 ChartJS.register(
@@ -562,15 +562,17 @@ const LandingPage: React.FC = () => {
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
-      <section className="py-12 bg-primary">
+      <section className="py-1 bg-primary">
+				 
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Welcome to Claims Processing & Payment System
           </h1>
-          <p className="text-white/80 max-w-2xl mx-auto">
+          <p className="text-white/80 max-w-2xl mx-auto mb-6">
             A comprehensive solution for managing workers compensation claims, designed for the Office
             of Workers Compensation in Papua New Guinea.
           </p>
+         
         </div>
       </section>
 

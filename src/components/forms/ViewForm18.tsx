@@ -55,6 +55,7 @@ const ViewForm18: React.FC<ViewForm18Props> = ({ irn, onClose }) => {
   const [form18Data, setForm18Data] = useState<Form18Data | null>(null);
   const [workerData, setWorkerData] = useState<WorkerData | null>(null);
   const [employerData, setEmployerData] = useState<EmployerData | null>(null);
+	 const [message, setMessage] = useState('');
   const [currentDate] = useState<string>(new Date().toLocaleDateString('en-GB', {
     day: 'numeric',
     month: 'long',
@@ -408,7 +409,25 @@ const ViewForm18: React.FC<ViewForm18Props> = ({ irn, onClose }) => {
             </table>
           </div>
         </div>
+ {/* Action Button */}
+          <div className="mt-8 flex justify-end">
+            <button 
+              onClick={fetchData}
+              className={`bg-primary hover:bg-primary/90 text-white px-6 py-2 rounded-md transition-colors ${
+                !irn || error ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              disabled={!irn || error}
+            >
+              Forward to Worker
+            </button>
+          </div>
 
+          {/* Success Message */}
+          {message && (
+            <div className={`mt-4 p-3 ${message.includes('Failed') ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'} rounded-md text-sm`}>
+              {message}
+            </div>
+          )}
         {onClose && (
           <div className="mt-6 flex justify-end">
             <button

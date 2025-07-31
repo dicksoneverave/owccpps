@@ -18,7 +18,11 @@ const Header: React.FC = () => {
         <Link to="/" className="flex items-center space-x-2">
           <span className="font-semibold">OWC Portal</span>
         </Link>
-
+<img 
+            src="https://ennhknwwfdlaudephyly.supabase.co/storage/v1/object/sign/cpps/logocrest.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8xMmRkZDBlOC05MjU4LTQ5ZmEtYTUyYy03NmRlZDY5MTM4OTAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJjcHBzL2xvZ29jcmVzdC5wbmciLCJpYXQiOjE3NTI2MDg2MzEsImV4cCI6MjM4MzMyODYzMX0.cZ8Px1aDewyNCGugVA5WUNqSUGyu28LvfU5VfmR3jao" 
+            alt="Workers Compensation Logo" 
+            className="mx-auto w-auto h-40 mb-2"
+          />
         {session ? (
           <div className="flex items-center space-x-4">
             <span className="hidden md:inline text-sm">

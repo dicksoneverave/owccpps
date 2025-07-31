@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
+import Form247Form17Injury from './247Form17Injury';
+import Form246Form17Death from './246Form17Death';
 
 interface ListForm17Props {
   onClose: () => void;
@@ -36,7 +38,14 @@ const ListForm17: React.FC<ListForm17Props> = ({
   const [userRegion, setUserRegion] = useState<string | null>(null);
   const [totalRecords, setTotalRecords] = useState(0);
   const [groupID, setGroupID] = useState<number | null>(null);
-
+  const [isFormModalOpen, setIsFormModalOpen] = useState(false);
+  const [selectedFormIRN, setSelectedFormIRN] = useState<string | null>(null);
+  const [selectedIncidentType, setSelectedIncidentType] = useState<string | null>(null);
+  const [showForm246, setShowForm246] = useState(false);
+  const [showForm247, setShowForm247] = useState(false);
+  const [selectedIRN, setSelectedIRN] = useState('');
+ 
+	
   useEffect(() => {
     const fetchUserRegion = async () => {
       try {
@@ -250,20 +259,43 @@ const ListForm17: React.FC<ListForm17Props> = ({
   };
 
   const handleView = (irn: string, incidentType: string) => {
-    if (onSelectIRN) {
+    console.log(`[DEBUG] View clicked - IRN: ${irn}, Incident Type: ${incidentType}`);
+  if (onSelectIRN) {
+      console.log(`[DEBUG] onSelectIRN callback triggered for IRN: ${irn}, Incident Type: ${incidentType}`);
       onSelectIRN(irn, incidentType);
     } else {
-      let url = '';
+      console.log(`[DEBUG] Displaying form for IRN: ${irn}, Incident Type: ${incidentType}`);
+      setSelectedIRN(irn);
+      setSelectedIncidentType(incidentType);
       
-      // Use a consistent URL structure for viewing Form17
-      url = '/dashboard/form17/view';
-      
-      if (url) {
-        window.location.href = `${url}?IRN=${irn}&IncidentType=${incidentType}`;
+      if (incidentType === 'Injury') {
+        console.log(`[DEBUG] Loading Form 247 for IRN: ${irn}`);
+        setShowForm247(true);
+      } else if (incidentType === 'Death') {
+        console.log(`[DEBUG] Loading Form 246 for IRN: ${irn}`);
+        setShowForm246(true);
       }
-    }
+	}
   };
 
+const handleCloseForm1 = () => {
+    setShowForm247(false);
+    //setShowForm139(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
+    console.log('[DEBUG] Form closed');
+  };
+
+const handleCloseForm2 = () => {
+    setShowForm246(false);
+    //setShowForm139(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
+    console.log('[DEBUG] Form closed');
+  };
+
+
+	
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -420,6 +452,32 @@ const ListForm17: React.FC<ListForm17Props> = ({
             </div>
           )}
 
+  {showForm247 && (
+            < Form247Form17Injury
+              irn={selectedIRN} 
+              incidentType={selectedIncidentType} 
+              onClose={handleCloseForm1} 
+              onSubmit={() => console.log('Form 247 submitted')}
+              onBack={() => {
+                setShowForm247(false);
+                console.log('Back to list from Form 247');
+              }}
+            />
+          )}
+
+          {showForm246 && (
+            < Form246Form17Death
+              irn={selectedIRN} 
+              incidentType={selectedIncidentType} 
+              onClose={handleCloseForm2} 
+              onSubmit={() => console.log('Form 246 submitted')}
+              onBack={() => {
+                setShowForm246(false);
+                console.log('Back to list from Form 246');
+              }}
+            />
+          )}
+					
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-6 flex justify-center">

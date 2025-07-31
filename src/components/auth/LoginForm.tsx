@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import Login from './pages/Login';
+import Logo from '../../components/common/Logo'; // Import the Logo component
+
 
 const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -64,9 +67,17 @@ const LoginForm: React.FC = () => {
   };
 
   return (
+	
+		
     <div className="min-h-screen flex items-center justify-center px-4 bg-[#8B2500]">
       <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
-        <div className="flex flex-col items-center mb-6">
+
+	 <div className="flex flex-col items-center justify-center ">
+        {/* Logo */}
+        <Logo size={150}/>
+	 </div>
+				
+        <div className="flex flex-col items-center  mb-6">
           <h1 className="text-2xl font-bold mt-4 text-center">
             OFFICE OF WORKERS COMPENSATION
           </h1>
@@ -74,7 +85,8 @@ const LoginForm: React.FC = () => {
             CLAIMS PROCESSING AND PAYMENT SYSTEM
           </p>
         </div>
-
+ 
+				
         <h2 className="text-xl font-semibold mb-2 text-center">Login</h2>
         <p className="text-gray-500 text-sm mb-6 text-center">
           Enter your credentials to access the system

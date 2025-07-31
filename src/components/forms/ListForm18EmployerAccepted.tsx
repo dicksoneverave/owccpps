@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
+import Form133CPOForm18InjuryEmployerResponseReview from './133CPOForm18InjuryEmployerResponseReview';
+import Form213CPOForm18DeathEmployerResponseReview from './213CPOForm18DeathEmployerResponseReview';
 
 interface ListForm18EmployerAcceptedProps {
   onClose: () => void;
@@ -32,10 +34,14 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
   const [searchLastName, setSearchLastName] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
   const [recordsPerPage] = useState(20);
   const [userRegion, setUserRegion] = useState<string | null>(null);
-  const [totalRecords, setTotalRecords] = useState(0);
   const [groupID, setGroupID] = useState<number | null>(null);
+  const [selectedIRN, setSelectedIRN] = useState('');
+  const [selectedIncidentType, setSelectedIncidentType] = useState('');
+  const [showForm133, setShowForm133] = useState(false);
+  const [showForm213, setShowForm213] = useState(false);
 
   useEffect(() => {
     const fetchUserRegion = async () => {
@@ -44,23 +50,21 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
           console.warn('No profile ID available');
           return;
         }
-        
+
         const { data, error } = await supabase
           .from('owcstaffmaster')
           .select('InchargeRegion')
           .eq('cppsid', profile.id)
           .maybeSingle();
-        
+
         if (error) {
           console.error('Database error:', error);
           throw error;
         }
-        
+
         if (data) {
           setUserRegion(data.InchargeRegion);
         } else {
-          console.warn('No region found for user:', profile.id);
-          // Default to a region for testing/development
           setUserRegion('Momase Region');
         }
 
@@ -68,13 +72,11 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
           setGroupID(group.id);
         }
       } catch (err) {
-        console.error('Error fetching user region:', err);
         setError('Failed to fetch region information. Please try again later.');
-        // Default to a region for testing/development
         setUserRegion('Momase Region');
       }
     };
-    
+
     fetchUserRegion();
   }, [profile, group]);
 
@@ -88,13 +90,12 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
     try {
       setLoading(true);
       setError(null);
-      
+
       if (!userRegion) {
         setError('Please wait while we load your region information.');
         return;
       }
 
-      // First, get the IRNs from form1112master for the user's region
       const { data: form1112Data, error: form1112Error } = await supabase
         .from('form1112master')
         .select('IRN')
@@ -104,14 +105,13 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
 
       if (!form1112Data || form1112Data.length === 0) {
         setForm18List([]);
-        setTotalRecords(0);
         setTotalPages(1);
+        setTotalRecords(0);
         return;
       }
 
       const regionIRNs = form1112Data.map(item => item.IRN);
-      
-      // Get the count of matching records
+
       const { count, error: countError } = await supabase
         .from('form18master')
         .select('IRN', { count: 'exact', head: true })
@@ -119,15 +119,13 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
         .in('IRN', regionIRNs);
 
       if (countError) throw countError;
-      
+
       const totalCount = count || 0;
       setTotalRecords(totalCount);
       setTotalPages(Math.ceil(totalCount / recordsPerPage));
-      
-      // Calculate pagination
+
       const start = (currentPage - 1) * recordsPerPage;
-      
-      // Get form18master data
+
       const { data: form18Data, error: form18Error } = await supabase
         .from('form18master')
         .select(`
@@ -149,10 +147,8 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
         return;
       }
 
-      // Get the IRNs from the result
       const irns = form18Data.map(item => item.IRN);
 
-      // Get the form1112master data for these IRNs
       const { data: detailedForm1112Data, error: detailedForm1112Error } = await supabase
         .from('form1112master')
         .select(`
@@ -164,15 +160,13 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
 
       if (detailedForm1112Error) throw detailedForm1112Error;
 
-      // Create a map of IRN to form1112master data
       const form1112Map = new Map();
       detailedForm1112Data.forEach(item => {
         form1112Map.set(item.IRN, item);
       });
 
-      // Get worker details for all WorkerIDs
       const workerIds = detailedForm1112Data.map(item => item.WorkerID).filter(Boolean);
-      
+
       if (workerIds.length === 0) {
         setForm18List([]);
         return;
@@ -189,19 +183,17 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
 
       if (workerError) throw workerError;
 
-      // Create a map of WorkerID to worker data
       const workerMap = new Map();
       workerData.forEach(item => {
         workerMap.set(item.WorkerID, item);
       });
 
-      // Combine all the data
       const formattedData = form18Data.map(item => {
         const form1112 = form1112Map.get(item.IRN);
         const worker = form1112 ? workerMap.get(form1112.WorkerID) : null;
 
         return {
-          IRN: item.IRN,
+          IRN: item.IRN?.toString() || 'N/A',
           DisplayIRN: form1112?.DisplayIRN || 'N/A',
           WorkerFirstName: worker?.WorkerFirstName || 'N/A',
           WorkerLastName: worker?.WorkerLastName || 'N/A',
@@ -216,30 +208,28 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
         };
       });
 
-      // Apply filters if needed
       let filteredData = formattedData;
-      
+
       if (searchIRN) {
         filteredData = filteredData.filter(item => 
           item.DisplayIRN.toLowerCase().includes(searchIRN.toLowerCase())
         );
       }
-      
+
       if (searchFirstName) {
         filteredData = filteredData.filter(item => 
           item.WorkerFirstName.toLowerCase().includes(searchFirstName.toLowerCase())
         );
       }
-      
+
       if (searchLastName) {
         filteredData = filteredData.filter(item => 
           item.WorkerLastName.toLowerCase().includes(searchLastName.toLowerCase())
         );
       }
-      
+
       setForm18List(filteredData);
     } catch (err: any) {
-      console.error('Error fetching Form18 list:', err);
       setError(err.message || 'Failed to load Form18 list');
     } finally {
       setLoading(false);
@@ -248,39 +238,37 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
   };
 
   const handleView = (irn: string, incidentType: string) => {
-    if (onSelectIRN) {
-      onSelectIRN(irn, incidentType);
-    } else {
-      let url = '';
-      
-      if (groupID === 19) {
-        switch (incidentType) {
-          case 'Injury':
-            url = '/dashboard/form18/injury-view';
-            break;
-          case 'Death':
-            url = '/dashboard/form18/death-view';
-            break;
-        }
-      } else {
-        switch (incidentType) {
-          case 'Injury':
-            url = '/dashboard/form18/injury-view-other';
-            break;
-          case 'Death':
-            url = '/dashboard/form18/death-view-other';
-            break;
-        }
-      }
-      
-      if (url) {
-        window.location.href = `${url}?IRN=${irn}&IncidentType=${incidentType}`;
-      }
+    if (typeof irn !== 'string' || !irn || irn.trim() === '') {
+      setError('Invalid IRN. Please select a valid claim to view.');
+      return;
     }
+
+    setSelectedIRN(irn);
+    setSelectedIncidentType(incidentType);
+
+    if (incidentType === 'Injury') {
+      setShowForm133(true);
+    } else if (incidentType === 'Death') {
+      // Future implementation
+      // setShowForm213(true);
+    }
+  };
+
+  const handleCloseForm133 = () => {
+    setShowForm133(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
+  };
+
+
+	  const handleCloseForm213 = () => {
+    setShowForm213(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
   };
 
   const handlePageChange = (page: number) => {
@@ -317,7 +305,7 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
                   placeholder="Enter Display IRN"
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="searchFirstName" className="block text-sm font-medium text-gray-700 mb-1">
                   Search by First Name
@@ -331,7 +319,7 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
                   placeholder="Enter First Name"
                 />
               </div>
-              
+
               <div>
                 <label htmlFor="searchLastName" className="block text-sm font-medium text-gray-700 mb-1">
                   Search by Last Name
@@ -346,7 +334,7 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
                 />
               </div>
             </div>
-            
+
             <div className="flex justify-end">
               <button
                 type="submit"
@@ -423,8 +411,11 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border border-gray-300">
                         {form.IncidentType}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border border-gray-300">
-                        {form.Status}
+                      <td className="px-6 py-4 whitespace-nowrap border border-gray-300">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                          ${form.Status === 'EmployerAccepted' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>
+                          {form.Status}
+                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap border border-gray-300">
                         <button
@@ -442,6 +433,37 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
           ) : (
             <div className="text-center py-8">
               <p className="text-gray-600">No Notifications to Display.</p>
+            </div>
+          )}
+
+          {/* Modal for Form 133 */}
+          {showForm133 && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                <Form133CPOForm18InjuryEmployerResponseReview
+                  irn={selectedIRN}
+                  incidentType={selectedIncidentType}
+                  onClose={handleCloseForm133}
+                  onSubmit={() => console.log('Form 133 submitted')}
+                  onBack={() => console.log('Back from Form 133')}
+                />
+              </div>
+            </div>
+          )}
+
+
+					{/* Modal for Form213 */}
+          {showForm213 && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                <Form213CPOForm18DeathEmployerResponseReview
+                  irn={selectedIRN}
+                  incidentType={selectedIncidentType}
+                  onClose={handleCloseForm213}
+                  onSubmit={() => console.log('Form 133 submitted')}
+                  onBack={() => console.log('Back from Form 133')}
+                />
+              </div>
             </div>
           )}
 
@@ -465,7 +487,7 @@ const ListForm18EmployerAccepted: React.FC<ListForm18EmployerAcceptedProps> = ({
                     </button>
                   </>
                 )}
-                
+
                 {currentPage < totalPages && (
                   <>
                     <button

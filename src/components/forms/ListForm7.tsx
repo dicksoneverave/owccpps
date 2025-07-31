@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
+import Form245EmployerRejectNotificationInjury from './245EmployerRejectNotificationInjury';
+import Form244EmployerRejectNotificationInjury from './244EmployerRejectNotificationInjury';
 
 interface ListForm7Props {
   onClose: () => void;
@@ -36,6 +38,11 @@ const ListForm7: React.FC<ListForm7Props> = ({
   const [userRegion, setUserRegion] = useState<string | null>(null);
   const [totalRecords, setTotalRecords] = useState(0);
   const [groupID, setGroupID] = useState<number | null>(null);
+  const [showForm245, setShowForm245] = useState(false);
+  const [showForm244, setShowForm244] = useState(false);
+  const [selectedIRN, setSelectedIRN] = useState('');
+  const [selectedIncidentType, setSelectedIncidentType] = useState('');
+
 
   useEffect(() => {
     const fetchUserRegion = async () => {
@@ -223,33 +230,51 @@ const ListForm7: React.FC<ListForm7Props> = ({
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1); // Reset to first page when searching
+		fetchForm7List();
   };
 
-  const handleView = (irn: string, incidentType: string) => {
-    if (onSelectIRN) {
+	const handleView = (irn: string, incidentType: string) => {
+    console.log(`[DEBUG] View clicked - IRN: ${irn}, Incident Type: ${incidentType}`);
+  if (onSelectIRN) {
+      console.log(`[DEBUG] onSelectIRN callback triggered for IRN: ${irn}, Incident Type: ${incidentType}`);
       onSelectIRN(irn, incidentType);
     } else {
-      let url = '';
+      console.log(`[DEBUG] Displaying form for IRN: ${irn}, Incident Type: ${incidentType}`);
+      setSelectedIRN(irn);
+      setSelectedIncidentType(incidentType);
       
-      // Determine the correct URL based on incident type
-      switch (incidentType) {
-        case 'Injury':
-          url = '/dashboard/form7/injury-view';
-          break;
-        case 'Death':
-          url = '/dashboard/form7/death-view';
-          break;
+      if (incidentType === 'Injury') {
+        console.log(`[DEBUG] Loading Form 245 for IRN: ${irn}`);
+        setShowForm245(true);
+      } else if (incidentType === 'Death') {
+        console.log(`[DEBUG] Loading Form 244 for IRN: ${irn}`);
+        setShowForm244(true);
       }
-      
-      if (url) {
-        window.location.href = `${url}?IRN=${irn}&IncidentType=${incidentType}`;
-      }
-    }
+	}
   };
 
-  const handlePageChange = (page: number) => {
+const handleCloseForm1 = () => {
+    setShowForm245(false);
+    //setShowForm139(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
+    console.log('[DEBUG] Form closed');
+  };
+
+const handleCloseForm2 = () => {
+    setShowForm244(false);
+    //setShowForm139(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
+    console.log('[DEBUG] Form closed');
+  };
+
+	
+   const handlePageChange = (page: number) => {
+    console.log(`[DEBUG] Changing page to: ${page}`);
     setCurrentPage(page);
   };
+
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -403,6 +428,32 @@ const ListForm7: React.FC<ListForm7Props> = ({
             </div>
           )}
 
+          {showForm245 && (
+            <Form245EmployerRejectNotificationInjury 
+              irn={selectedIRN} 
+              incidentType={selectedIncidentType} 
+              onClose={handleCloseForm1} 
+              onSubmit={() => console.log('Form 245 submitted')}
+              onBack={() => {
+                setShowForm245(false);
+                console.log('Back to list from Form 245');
+              }}
+            />
+          )}
+
+          {showForm244 && (
+            <Form244EmployerRejectNotificationDeath 
+              irn={selectedIRN} 
+              incidentType={selectedIncidentType} 
+              onClose={handleCloseForm2} 
+              onSubmit={() => console.log('Form 245 submitted')}
+              onBack={() => {
+                setShowForm244(false);
+                console.log('Back to list from Form 245');
+              }}
+            />
+          )}
+					
           {/* Pagination */}
           {totalPages > 1 && (
             <div className="mt-6 flex justify-center">

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
+import Form140NotificationEmployerResponsePendingInjury from './140NotificationEmployerResponsePendingInjury';
+import Form139NotificationEmployerResponsePendingDeath from './139NotificationEmployerResponsePendingDeath';
 
 interface ListForm6NotificationEmployerResponsePendingProps {
   onClose: () => void;
@@ -36,6 +38,10 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
   const [userRegion, setUserRegion] = useState<string | null>(null);
   const [totalRecords, setTotalRecords] = useState(0);
   const [groupID, setGroupID] = useState<number | null>(null);
+  const [showForm140, setShowForm140] = useState(false);
+  const [showForm139, setShowForm139] = useState(false);
+  const [selectedIRN, setSelectedIRN] = useState('');
+  const [selectedIncidentType, setSelectedIncidentType] = useState('');
 
   useEffect(() => {
     const fetchUserRegion = async () => {
@@ -60,17 +66,15 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
           setUserRegion(data.InchargeRegion);
         } else {
           console.warn('No region found for user:', profile.id);
-          // Default to a region for testing/development
           setUserRegion('Momase Region');
         }
 
-        if (group) {
+        if (group && 'id' in group) {
           setGroupID(group.id);
         }
       } catch (err) {
         console.error('Error fetching user region:', err);
         setError('Failed to fetch region information. Please try again later.');
-        // Default to a region for testing/development
         setUserRegion('Momase Region');
       }
     };
@@ -94,7 +98,6 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
         return;
       }
       
-      // First, get the IRNs from form1112master for the user's region
       const { data: form1112Data, error: form1112Error } = await supabase
         .from('form1112master')
         .select('IRN')
@@ -111,7 +114,6 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
 
       const regionIRNs = form1112Data.map(item => item.IRN);
       
-      // Get the count of matching records
       const { count, error: countError } = await supabase
         .from('form6master')
         .select('IRN', { count: 'exact', head: true })
@@ -124,10 +126,8 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
       setTotalRecords(totalCount);
       setTotalPages(Math.ceil(totalCount / recordsPerPage));
       
-      // Calculate pagination
       const start = (currentPage - 1) * recordsPerPage;
       
-      // Get form6master data
       const { data: form6Data, error: form6Error } = await supabase
         .from('form6master')
         .select(`
@@ -149,10 +149,8 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
         return;
       }
 
-      // Get the IRNs from the result
       const irns = form6Data.map(item => item.IRN);
-
-      // Get the form1112master data for these IRNs
+      
       const { data: detailedForm1112Data, error: detailedForm1112Error } = await supabase
         .from('form1112master')
         .select(`
@@ -164,13 +162,6 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
 
       if (detailedForm1112Error) throw detailedForm1112Error;
 
-      // Create a map of IRN to form1112master data
-      const form1112Map = new Map();
-      detailedForm1112Data.forEach(item => {
-        form1112Map.set(item.IRN, item);
-      });
-
-      // Get worker details for all WorkerIDs
       const workerIds = detailedForm1112Data.map(item => item.WorkerID).filter(Boolean);
       
       if (workerIds.length === 0) {
@@ -189,16 +180,9 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
 
       if (workerError) throw workerError;
 
-      // Create a map of WorkerID to worker data
-      const workerMap = new Map();
-      workerData.forEach(item => {
-        workerMap.set(item.WorkerID, item);
-      });
-
-      // Combine all the data
       const formattedData = form6Data.map(item => {
-        const form1112 = form1112Map.get(item.IRN);
-        const worker = form1112 ? workerMap.get(form1112.WorkerID) : null;
+        const form1112 = detailedForm1112Data.find(f => f.IRN === item.IRN);
+        const worker = form1112 ? workerData.find(w => w.WorkerID === form1112.WorkerID) : null;
 
         return {
           IRN: item.IRN,
@@ -216,7 +200,6 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
         };
       });
 
-      // Apply filters if needed
       let filteredData = formattedData;
       
       if (searchIRN) {
@@ -248,43 +231,41 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setCurrentPage(1); // Reset to first page when searching
+    setCurrentPage(1);
     fetchForm6List();
   };
 
   const handleView = (irn: string, incidentType: string) => {
+    console.log(`[DEBUG] View clicked - IRN: ${irn}, Incident Type: ${incidentType}`);
+    
     if (onSelectIRN) {
+      console.log(`[DEBUG] onSelectIRN callback triggered for IRN: ${irn}, Incident Type: ${incidentType}`);
       onSelectIRN(irn, incidentType);
     } else {
-      let url = '';
+      console.log(`[DEBUG] Displaying form for IRN: ${irn}, Incident Type: ${incidentType}`);
+      setSelectedIRN(irn);
+      setSelectedIncidentType(incidentType);
       
-      if (groupID === 19) {
-        switch (incidentType) {
-          case 'Injury':
-            url = '/dashboard/form6/injury-view';
-            break;
-          case 'Death':
-            url = '/dashboard/form6/death-view';
-            break;
-        }
-      } else {
-        switch (incidentType) {
-          case 'Injury':
-            url = '/dashboard/form6/injury-view-other';
-            break;
-          case 'Death':
-            url = '/dashboard/form6/death-view-other';
-            break;
-        }
-      }
-      
-      if (url) {
-        window.location.href = `${url}?IRN=${irn}&IncidentType=${incidentType}`;
+      if (incidentType === 'Injury') {
+        console.log(`[DEBUG] Loading Form 140 for IRN: ${irn}`);
+        setShowForm140(true);
+      } else if (incidentType === 'Death') {
+        console.log(`[DEBUG] Loading Form 139 for IRN: ${irn}`);
+        setShowForm139(true);
       }
     }
   };
 
+  const handleCloseForm = () => {
+    setShowForm140(false);
+    setShowForm139(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
+    console.log('[DEBUG] Form closed');
+  };
+
   const handlePageChange = (page: number) => {
+    console.log(`[DEBUG] Changing page to: ${page}`);
     setCurrentPage(page);
   };
 
@@ -302,7 +283,6 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
         </div>
 
         <div className="p-6">
-          {/* Search Form */}
           <form onSubmit={handleSearch} className="mb-6 space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
@@ -446,46 +426,69 @@ const ListForm6NotificationEmployerResponsePending: React.FC<ListForm6Notificati
             </div>
           )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-6 flex justify-center">
-              <div className="flex space-x-2">
-                {currentPage > 1 && (
-                  <>
-                    <button
-                      onClick={() => handlePageChange(1)}
-                      className="px-3 py-1 border rounded text-sm"
-                    >
-                      First
-                    </button>
-                    <button
-                      onClick={() => handlePageChange(currentPage - 1)}
-                      className="px-3 py-1 border rounded text-sm"
-                    >
-                      Previous
-                    </button>
-                  </>
-                )}
-                
-                {currentPage < totalPages && (
-                  <>
-                    <button
-                      onClick={() => handlePageChange(currentPage + 1)}
-                      className="px-3 py-1 border rounded text-sm"
-                    >
-                      Next
-                    </button>
-                    <button
-                      onClick={() => handlePageChange(totalPages)}
-                      className="px-3 py-1 border rounded text-sm"
-                    >
-                      Last
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
+          {showForm140 && (
+            <Form140NotificationEmployerResponsePendingInjury 
+              irn={selectedIRN} 
+              incidentType={selectedIncidentType} 
+              onClose={handleCloseForm} 
+              onSubmit={() => console.log('Form 140 submitted')}
+              onBack={() => {
+                setShowForm140(false);
+                console.log('Back to list from Form 140');
+              }}
+            />
           )}
+
+          {showForm139 && (
+            <Form139NotificationEmployerResponsePendingDeath 
+              irn={selectedIRN} 
+              incidentType={selectedIncidentType} 
+              onClose={handleCloseForm} 
+              onSubmit={() => console.log('Form 139 submitted')}
+              onBack={() => {
+                setShowForm139(false);
+                console.log('Back to list from Form 139');
+              }}
+            />
+          )}
+
+          <div className="mt-6 flex justify-center">
+            <div className="flex space-x-2">
+              {currentPage > 1 && (
+                <>
+                  <button
+                    onClick={() => handlePageChange(1)}
+                    className="px-3 py-1 border rounded text-sm"
+                  >
+                    First
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    className="px-3 py-1 border rounded text-sm"
+                  >
+                    Previous
+                  </button>
+                </>
+              )}
+              
+              {currentPage < totalPages && (
+                <>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    className="px-3 py-1 border rounded text-sm"
+                  >
+                    Next
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(totalPages)}
+                    className="px-3 py-1 border rounded text-sm"
+                  >
+                    Last
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
