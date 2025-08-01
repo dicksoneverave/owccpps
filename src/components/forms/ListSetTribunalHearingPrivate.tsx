@@ -6,7 +6,7 @@ import Form238HearingForm11SubmissionPublic from './238HearingForm11SubmissionPu
 import Form239HearingForm12SubmissionPublic from './239HearingForm12SubmissionPublic';
 import Form253HearingForm7SubmissionPublic from './253HearingForm7SubmissionPublic';
 
-interface TribunalHearingPublicProps {
+interface TribunalHearingPrivateProps {
   onClose: () => void;
   onSelectIRN?: (irn: string, action: string) => void;
 }
@@ -22,7 +22,7 @@ interface HearingData {
   Type: string;
 }
 
-const ListSetTribunalHearingPublic: React.FC<TribunalHearingPublicProps> = ({ 
+const ListSetTribunalHearingPrivate: React.FC<TribunalHearingPrivateProps> = ({ 
   onClose,
   onSelectIRN 
 }) => {
