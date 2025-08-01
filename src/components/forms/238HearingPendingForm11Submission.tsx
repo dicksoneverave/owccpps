@@ -89,7 +89,7 @@ console.log('WorkerID:',form1112Data.WorkerID);
         if (workerError) {
           throw workerError;
         }
-        console.log('EmployerCPPSID:',form1112Data.CPPSID);
+        console.log('EmployerCPPSID:',currentEmploymentData.CPPSID);
         setFormData({
           ...form1112Data,
           ...currentEmploymentData,
