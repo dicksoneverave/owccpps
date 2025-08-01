@@ -67,6 +67,35 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, onC
           throw workerError;
         }
 
+console.log('WorkerID:',form1112Data.WorkerID);
+        console.log('Injury Extent:',form1112Data.NatureExtentInjury);
+        console.log('Region:',form1112Data.IncidentRegion);
+
+        // Fetch worker currentemployment details
+        const { data: currentEmploymentData, error: currentEmploymentError } = await supabase
+          .from('currentemploymentdetails')
+          .select('*')
+          .eq('WorkerID', form1112Data.WorkerID)
+          .single();
+
+        if (currentEmploymentError) {
+          throw currentEmploymentError;
+        }
+
+
+ // Fetch worker employer details
+        const { data: workerEmployerData, error: workerEmployerError } = await supabase
+          .from('employermaster')
+          .select('*')
+          .eq('CPPSID', currentEmploymentData.EmployerCPPSID)
+          .single();
+
+        if (workerEmployerError) {
+          throw workerEmployerError;
+        }
+        console.log('CPPSID:',currentEmploymentData.EmployerCPPSID);
+        console.log('Employer:',workerEmployerData.OrganizationName);
+        
         // Fetch form7master data
         const { data: form7Data, error: form7Error } = await supabase
           .from('form7master')
