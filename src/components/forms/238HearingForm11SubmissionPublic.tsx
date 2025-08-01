@@ -157,7 +157,7 @@ console.log('IRN:',validIRN);
       <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
           <h2 className="text-xl font-semibold text-gray-900">
-            238 - Hearing Pending Form 11 Submission
+            238 - Tribunal Hearing Timebarred Form 11 Submission
             {formData.DisplayIRN && (
               <span className="ml-2 text-sm font-normal text-gray-600">
                 {formData.DisplayIRN}
