@@ -56,7 +56,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
         .from('view_hearings_set_public')
         .select('*', { count: 'exact', head: true })
         .eq('THSHearingStatus', 'HearingSet')
-        .eq('THSWorkerOrganizationType', 'Public');
+        //.eq('THSWorkerOrganizationType', 'Public');
 
       // Apply search filters if provided
       if (searchIRN) {
