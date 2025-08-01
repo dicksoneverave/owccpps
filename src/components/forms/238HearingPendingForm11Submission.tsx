@@ -83,13 +83,13 @@ console.log('WorkerID:',form1112Data.WorkerID);
         const { data: workerEmployerData, error: workerEmployerError } = await supabase
           .from('employermaster')
           .select('*')
-          .eq('EmployerCPPSID', currentEmploymentData.CPPSID)
+          .eq('CPPSID', currentEmploymentData.EmployerCPPSID)
           .single();
 
         if (workerError) {
           throw workerError;
         }
-        console.log('EmployerCPPSID:',currentEmploymentData.CPPSID);
+        console.log('CPPSID:',currentEmploymentData.EmployerCPPSID);
         setFormData({
           ...form1112Data,
           ...currentEmploymentData,
