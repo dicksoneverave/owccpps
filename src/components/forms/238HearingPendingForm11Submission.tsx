@@ -90,6 +90,7 @@ console.log('WorkerID:',form1112Data.WorkerID);
           throw workerError;
         }
         console.log('CPPSID:',currentEmploymentData.EmployerCPPSID);
+        console.log('Employer:',workerEmployerData.OrganizationName);
         setFormData({
           ...form1112Data,
           ...currentEmploymentData,
