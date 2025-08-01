@@ -80,10 +80,10 @@ console.log('IRN:',validIRN);
 
 
  // Fetch worker employer details
-        const { data: currentEmploymentData, error: currentEmploymentError } = await supabase
-          .from('currentemploymentdetails')
+        const { data: workerEmployerData, error: workerEmployerError } = await supabase
+          .from('employermaster')
           .select('*')
-          .eq('WorkerID', form1112Data.WorkerID)
+          .eq('EmployerCPPSID', currentEmploymentData.WorkerID)
           .single();
 
         if (workerError) {
