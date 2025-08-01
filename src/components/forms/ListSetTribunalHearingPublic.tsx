@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 //import Form239HearingPendingForm12Submission from './239HearingPendngForm12Submission';
 //import Form253HearingPendingForm7Submission from './253HearingPendingForm7Submission';
 
-interface ListPendingHearingsPublicProps {
+interface ListSetTribunalHearingPublicProps {
   onClose: () => void;
   onSelectIRN?: (irn: string, action: string) => void;
 }
@@ -22,7 +22,7 @@ interface HearingData {
   Type: string;
 }
 
-const ListPendingHearingsPublic: React.FC<ListPendingHearingsPublicProps> = ({ 
+const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> = ({ 
   onClose,
   onSelectIRN 
 }) => {
@@ -607,4 +607,4 @@ const ListPendingHearingsPublic: React.FC<ListPendingHearingsPublicProps> = ({
   );
 };
 
-export default ListPendingHearingsPublic;
+export default ListSetTribunalHearingPublic;
