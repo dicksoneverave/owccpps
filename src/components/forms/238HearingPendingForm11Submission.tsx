@@ -92,6 +92,8 @@ console.log('IRN:',validIRN);
         
         setFormData({
           ...form1112Data,
+          ...currentEmploymentData,
+          ...workerEmployerData,
           ...workerData
         });
       } catch (err: any) {
