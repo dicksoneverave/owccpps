@@ -200,7 +200,7 @@ const PrintHearingSetList: React.FC<PrintSetListAllProps> = ({ onClose }) => {
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-xl font-semibold text-gray-900">
-            Print List - All
+            Print Hearing Set List - All
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
             <X className="h-5 w-5" />
