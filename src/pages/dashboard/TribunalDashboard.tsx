@@ -18,7 +18,7 @@ const TribunalDashboard: React.FC = () => {
   const [showPrintListPrivate, setShowPrintListPrivate] = useState(false);
   const [showPrintListAll, setShowPrintListAll] = useState(false);
   const [showSetHearing, setShowSetHearing] = useState(false);
-  const [showPrintHearingSetList, setPrintHearingSetList] = useState(false);
+  const [showPrintHearingSetList, setShowPrintHearingSetList] = useState(false);
   const [selectedIRN, setSelectedIRN] = useState<string | null>(null);
 
   const menuItems = {
