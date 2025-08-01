@@ -54,8 +54,8 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
       // Get the count of matching records
       let countQuery = supabase
         .from('view_hearings_set_public')
-        .select('*', { count: 'exact', head: true })
-        .eq('THSHearingStatus', 'Pending')
+        .select('*', { count: 'exact', head: true });
+       // .eq('THSHearingStatus', 'Pending')
         //.eq('THSWorkerOrganizationType', 'Public');
 
       // Apply search filters if provided
@@ -153,7 +153,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
           THSHearingStatus,
           THSHearingType
         `)
-        .eq('THSHearingStatus', 'Pending')
+        //.eq('THSHearingStatus', 'Pending')
         .range(start, start + recordsPerPage - 1)
         .order('THSSubmissionDate', { ascending: false });
       
