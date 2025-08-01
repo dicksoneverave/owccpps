@@ -74,8 +74,8 @@ console.log('WorkerID:',form1112Data.WorkerID);
           .eq('WorkerID', form1112Data.WorkerID)
           .single();
 
-        if (workerError) {
-          throw workerError;
+        if (currentEmploymentError) {
+          throw currentEmploymentError;
         }
 
 
@@ -86,8 +86,8 @@ console.log('WorkerID:',form1112Data.WorkerID);
           .eq('CPPSID', currentEmploymentData.EmployerCPPSID)
           .single();
 
-        if (workerError) {
-          throw workerError;
+        if (workerEmployerError) {
+          throw workerEmployerError;
         }
         console.log('CPPSID:',currentEmploymentData.EmployerCPPSID);
         console.log('Employer:',workerEmployerData.OrganizationName);
