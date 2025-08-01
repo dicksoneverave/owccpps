@@ -185,7 +185,7 @@ const PrintHearingSetList: React.FC<PrintSetListAllProps> = ({ onClose }) => {
       }
       
       // Save the PDF
-      doc.save('TribunalHearingPendingList-All.pdf');
+      doc.save('TribunalSetHearingList-All.pdf');
       
     } catch (err: any) {
       console.error('Error generating PDF:', err);
