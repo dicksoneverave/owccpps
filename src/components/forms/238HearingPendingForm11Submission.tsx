@@ -106,6 +106,8 @@ console.log('IRN:',validIRN);
         .from('tribunalhearingoutcome')
         .insert({
           THOIRN: validIRN
+          THORegion: form1112Data.IncidentRegion
+          THONatureOfAccident: form1112Data.NatureExtentInjury
         });
 
       if (insertError) {
