@@ -7,6 +7,7 @@ import PrintListPublic from '../../components/forms/PrintListPublic';
 import PrintListPrivate from '../../components/forms/PrintListPrivate';
 import PrintListAll from '../../components/forms/PrintListAll';
 import SetTribunalHearing from '../../components/forms/SetTribunalHearing';
+import PrintHearingSetList from '../../components/forms/PrintHearingSetList';
 
 const TribunalDashboard: React.FC = () => {
   const { profile } = useAuth();
@@ -17,6 +18,7 @@ const TribunalDashboard: React.FC = () => {
   const [showPrintListPrivate, setShowPrintListPrivate] = useState(false);
   const [showPrintListAll, setShowPrintListAll] = useState(false);
   const [showSetHearing, setShowSetHearing] = useState(false);
+  const [showPrintHearingSetList, setPrintHearingSetList] = useState(false);
   const [selectedIRN, setSelectedIRN] = useState<string | null>(null);
 
   const menuItems = {
