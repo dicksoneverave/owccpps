@@ -66,6 +66,8 @@ console.log('IRN:',validIRN);
           throw workerError;
         }
 console.log('WorkerID:',form1112Data.WorkerID);
+        console.log('Injury Extent:',form1112Data.NatureExtentInjury);
+        console.log('Region:',form1112Data.IncidentRegion);
 
         // Fetch worker currentemployment details
         const { data: currentEmploymentData, error: currentEmploymentError } = await supabase
