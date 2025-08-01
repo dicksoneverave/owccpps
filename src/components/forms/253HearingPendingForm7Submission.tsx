@@ -20,6 +20,8 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, onC
   const [formData, setFormData] = useState<any>({});
   const [validIRN, setValidIRN] = useState<number | null>(null);
   const [showDocumentStatus, setShowDocumentStatus] = useState(false);
+  const [settingHearing, setSettingHearing] = useState(false);
+  const [hearingMessage, setHearingMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const validateIRN = () => {
@@ -92,6 +94,45 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, onC
     fetchFormData();
   }, [validIRN]);
 
+  const handleSetHearing = async () => {
+    if (!validIRN) return;
+
+    try {
+      setSettingHearing(true);
+      setHearingMessage(null);
+
+      // 1. Update tribunalhearingschedule table
+      const { error: updateError } = await supabase
+        .from('tribunalhearingschedule')
+        .update({
+          THSSetForHearing: 'Scheduled',
+          THSHearingStatus: 'HearingSet'
+        })
+        .eq('IRN', validIRN);
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      // 2. Insert into tribunalhearingoutcome table
+      const { error: insertError } = await supabase
+        .from('tribunalhearingoutcome')
+        .insert({
+          THOIRN: validIRN
+        });
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      setHearingMessage('Hearing has been successfully set for this claim.');
+    } catch (err: any) {
+      console.error('Error setting hearing:', err);
+      setHearingMessage(`Failed to set hearing: ${err.message}`);
+    } finally {
+      setSettingHearing(false);
+    }
+  };
   if (error) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -200,6 +241,29 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, onC
             <p className="text-textSecondary">Click the button above to view required and submitted documents for this claim.</p>
           </div>
         </div>
+          {/* Section 6: Set Hearing */}
+          <div className="border rounded-lg p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-primary">Set Hearing</h3>
+              <button
+                onClick={handleSetHearing}
+                disabled={settingHearing}
+                className="btn bg-primary text-white hover:bg-primary-dark text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {settingHearing ? 'Setting...' : 'Set for Hearing'}
+              </button>
+            </div>
+            <p className="text-textSecondary">Click the button above to schedule this claim for tribunal hearing.</p>
+            {hearingMessage && (
+              <div className={`mt-4 p-3 rounded-md text-sm ${
+                hearingMessage.includes('Failed') 
+                  ? 'bg-red-50 text-red-700 border border-red-200' 
+                  : 'bg-green-50 text-green-700 border border-green-200'
+              }`}>
+                {hearingMessage}
+              </div>
+            )}
+          </div>
       </div>
 
       {/* Document Status Modal */}
