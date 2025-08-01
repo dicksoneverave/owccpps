@@ -368,7 +368,6 @@ const ListPendingHearingsPublic: React.FC<ListPendingHearingsPublicProps> = ({
       } else {
         // View action - you can implement view logic here if needed
         console.log('View action for IRN:', irn);
-        }
       }
     }
   };
