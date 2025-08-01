@@ -133,9 +133,9 @@ console.log('WorkerID:',form1112Data.WorkerID);
         .from('tribunalhearingoutcome')
         .insert({
           THOIRN: validIRN,
-          THORegion: form1112Data.IncidentRegion,
-          THONatureOfAccident: form1112Data.NatureExtentInjury,
-          THOEmployer: workerEmployerData.OrganizationName
+          THORegion: formData.IncidentRegion,
+          THONatureOfAccident: formData.NatureExtentInjury,
+          THOEmployer: formData.OrganizationName
         });
 
       if (insertError) {
