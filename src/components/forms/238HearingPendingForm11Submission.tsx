@@ -105,8 +105,8 @@ console.log('IRN:',validIRN);
       const { error: insertError } = await supabase
         .from('tribunalhearingoutcome')
         .insert({
-          THOIRN: validIRN
-          THORegion: form1112Data.IncidentRegion
+          THOIRN: validIRN,
+          THORegion: form1112Data.IncidentRegion,
           THONatureOfAccident: form1112Data.NatureExtentInjury
         });
 
