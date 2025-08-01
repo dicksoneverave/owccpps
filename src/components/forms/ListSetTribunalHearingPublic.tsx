@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
-import Form238HearingForm11SubmissionPublic from './238HearingPendingForm11SubmissionPublic';
-import Form239HearingForm12SubmissionPublic from './239HearingPendngForm12SubmissionPublic';
-import Form253HearingForm7SubmissionPublic from './253HearingPendingForm7SubmissionPublic';
+import Form238HearingForm11SubmissionPublic from './238HearingForm11SubmissionPublic';
+import Form239HearingForm12SubmissionPublic from './239HearingForm12SubmissionPublic';
+import Form253HearingForm7SubmissionPublic from './253HearingForm7SubmissionPublic';
 
 interface TribunalHearingPublicProps {
   onClose: () => void;
