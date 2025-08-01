@@ -172,7 +172,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
             THSHearingType
           `)
           .eq('THSHearingStatus', 'HearingSet')
-          .eq('THSWorkerOrganizationType', 'Public')
+         // .eq('THSWorkerOrganizationType', 'Public')
           .range(start, start + recordsPerPage - 1)
           .order('THSSubmissionDate', { ascending: false });
         
@@ -339,7 +339,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
   };
 
   const handleAction = (irn: string, setForHearing: string) => {
-    if (setForHearing === 'Not Scheduled') {
+    if (setForHearing === 'Scheduled') {
       // Schedule action - show appropriate form based on hearing type
       const hearing = hearingsList.find(h => h.IRN === irn);
       
