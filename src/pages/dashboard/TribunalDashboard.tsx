@@ -35,7 +35,8 @@ const TribunalDashboard: React.FC = () => {
     'Hearing': {
       items: [
         'Set Hearing',
-        'Tribunal Hearing',
+        'Tribunal Hearing (Public)',
+        'Tribunal Hearing (Private)',
         'Hearing Complete'
       ]
     },
