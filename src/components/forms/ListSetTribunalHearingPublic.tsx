@@ -317,7 +317,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
           FirstName: item.firstname,
           LastName: item.lastname,
           SubmissionDate: item.submissiondate,
-          SetForHearing: item.setforhearing || 'Not Scheduled',
+          SetForHearing: item.setforhearing || 'Scheduled',
           Status: item.status,
           Type: item.type
         }));
