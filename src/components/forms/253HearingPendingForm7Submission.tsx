@@ -110,6 +110,8 @@ console.log('WorkerID:',form1112Data.WorkerID);
         setFormData({
           ...form1112Data,
           ...workerData,
+          ..currentEmploymentData,
+          ...workerEmployerData,
           ...form7Data
         });
       } catch (err: any) {
