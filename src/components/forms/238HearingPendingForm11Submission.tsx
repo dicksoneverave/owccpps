@@ -66,6 +66,21 @@ console.log('IRN:',validIRN);
           throw workerError;
         }
 
+
+        // Fetch worker currentemployment details
+        const { data: currentEmploymentData, error: currentEmploymentError } = await supabase
+          .from('currentemploymentdetails')
+          .select('*')
+          .eq('WorkerID', form1112Data.WorkerID)
+          .single();
+
+        if (workerError) {
+          throw workerError;
+        }
+
+
+
+        
         setFormData({
           ...form1112Data,
           ...workerData
