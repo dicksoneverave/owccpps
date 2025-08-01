@@ -163,7 +163,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
         
         // Step 1: Get the hearing schedule records
         let query = supabase
-          .from('tribunalhearingschedule')
+          .from('view_hearings_set_public')
           .select(`
             IRN,
             THSSubmissionDate,
@@ -171,7 +171,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
             THSHearingStatus,
             THSHearingType
           `)
-          .eq('THSHearingStatus', 'HearingPending')
+          .eq('THSHearingStatus', 'HearingSet')
           .eq('THSWorkerOrganizationType', 'Public')
           .range(start, start + recordsPerPage - 1)
           .order('THSSubmissionDate', { ascending: false });
