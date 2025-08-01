@@ -53,7 +53,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
       
       // Get the count of matching records
       let countQuery = supabase
-        .from('view_hearings_pending_public')
+        .from('view_hearings_set_public')
         .select('*', { count: 'exact', head: true })
         .eq('THSHearingStatus', 'Pending')
         //.eq('THSWorkerOrganizationType', 'Public');
@@ -145,7 +145,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
       
       // Query the view directly instead of using RPC
       let query = supabase
-        .from('view_hearings_pending_public')
+        .from('view_hearings_set_public')
         .select(`
           IRN,
           THSSubmissionDate,
