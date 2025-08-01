@@ -35,7 +35,7 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, on
 
     validateIRN();
   }, [irn]);
-
+console.log('IRN:',validIRN);
   useEffect(() => {
     if (validIRN === null) return;
 
