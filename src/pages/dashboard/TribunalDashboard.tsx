@@ -28,7 +28,7 @@ const TribunalDashboard: React.FC = () => {
         'Hearing Pending (Private)',
         'Print List (Public)',
         'Print List (Private)',
-        'Print List (All)'
+        'Print List (All)',
         'Print Set Hearing List (All)'
       ]
     },
