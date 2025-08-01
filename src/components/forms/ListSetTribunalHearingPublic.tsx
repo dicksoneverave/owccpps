@@ -6,7 +6,7 @@ import Form238HearingForm11SubmissionPublic from './238HearingPendingForm11Submi
 import Form239HearingForm12SubmissionPublic from './239HearingPendngForm12SubmissionPublic';
 import Form253HearingForm7SubmissionPublic from './253HearingPendingForm7SubmissionPublic';
 
-interface ListSetTribunalHearingPublicProps {
+interface TribunalHearingPublicProps {
   onClose: () => void;
   onSelectIRN?: (irn: string, action: string) => void;
 }
@@ -22,7 +22,7 @@ interface HearingData {
   Type: string;
 }
 
-const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> = ({ 
+const ListSetTribunalHearingPublic: React.FC<TribunalHearingPublicProps> = ({ 
   onClose,
   onSelectIRN 
 }) => {
@@ -342,7 +342,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
       <div className="bg-white rounded-lg shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white">
           <h2 className="text-xl font-semibold text-gray-900">
-            Hearing Pending (Public)
+            Tribunal Hearing (Public)
           </h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
             <X className="h-5 w-5" />
@@ -539,7 +539,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
 
       {/* Form 238 Modal */}
       {showForm238 && (
-        <Form238HearingPendingForm11Submission
+        <Form238HearingForm11SubmissionPublic
           irn={selectedIRN}
           onClose={() => {
             setShowForm238(false);
@@ -550,7 +550,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
 
       {/* Form 239 Modal */}
       {showForm239 && (
-        <Form239HearingPendingForm12Submission
+        <Form239HearingForm12SubmissionPublic
           irn={selectedIRN}
           onClose={() => {
             setShowForm239(false);
@@ -561,7 +561,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
 
       {/* Form 253 Modal */}
       {showForm253 && (
-        <Form253HearingPendingForm7Submission
+        <Form253HearingForm7SubmissionPublic
           irn={selectedIRN}
           onClose={() => {
             setShowForm253(false);
