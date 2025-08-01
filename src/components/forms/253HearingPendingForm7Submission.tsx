@@ -1,8 +1,5 @@
-// src/components/forms/245EmployerRejectNotificationInjury.tsx
 import React, { useState, useEffect } from 'react';
-import { X, Download, Printer, AlertCircle } from 'lucide-react';
-import html2pdf from 'html2pdf.js';
-import generatePDF from '../../utils/pdfGenerator';
+import { X, AlertCircle } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
 import Form113View from './Form113View';
@@ -50,7 +47,6 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, inc
           .from('form1112master')
           .select('*')
           .eq('IRN', validIRN)
-          .eq('IncidentType', 'Injury')
           .single();
 
         if (form1112Error) {
@@ -68,12 +64,11 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, inc
           throw workerError;
         }
 
-        // Fetch form7master data for injury notification
+        // Fetch form7master data for employer rejection
         const { data: form7Data, error: form7Error } = await supabase
           .from('form7master')
           .select('*')
           .eq('IRN', validIRN)
-          .eq('IncidentType', 'Injury')
           .single();
 
         if (form7Error) {
@@ -86,8 +81,8 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, inc
           ...form7Data,
         });
       } catch (err: any) {
-        console.error('Error fetching injury notification data:', err);
-        setError(err.message || 'Failed to load injury notification data');
+        console.error('Error fetching form7 hearing data:', err);
+        setError(err.message || 'Failed to load form7 hearing data');
       } finally {
         setLoading(false);
       }
@@ -121,7 +116,7 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, inc
         <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl">
           <div className="flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
-            <p className="text-gray-700">Loading notification details...</p>
+            <p className="text-gray-700">Loading form7 hearing details...</p>
           </div>
         </div>
       </div>
@@ -133,7 +128,7 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, inc
       <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
           <h2 className="text-xl font-semibold text-gray-900">
-            253 - Employer Response Rejection Notification
+            253 - Hearing Pending Form7 Submission
             {formData.DisplayIRN && (
               <span className="ml-2 text-sm font-normal text-gray-600">
                 {formData.DisplayIRN}
@@ -150,15 +145,17 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, inc
         </div>
 
         <div className="p-6 space-y-8">
-          {/* Section 1: Form 7 - Notice to Registrar */}
-          <div className="border rounded-lg p-4" id="form6-section">
-            <h3 className="text-lg font-semibold mb-4 text-primary">Form 7 - Notice to Registrar</h3>
-            <ViewForm7 irn={validIRN?.toString() || ''} />
+          {/* Section 1: Form 7 - Employer Rejection */}
+          <div className="border rounded-lg p-4" id="form7-section">
+            <h3 className="text-lg font-semibold mb-4 text-primary">Form 7 - Employer Rejection</h3>
+            <ViewForm7 irn={validIRN?.toString() || ''} incidentType={incidentType} onClose={onClose} />
           </div>
 
-          {/* Section 2: Form 113 - Injury Claim Details */}
-          <div className="border rounded-lg p-4" id="injuryclaims-section">
-            <h3 className="text-lg font-semibold mb-4 text-primary">Form 113 - Injury Claim Details</h3>
+          {/* Section 2: Form 113 - Injury Claim Details (if injury) or Form 124 (if death) */}
+          <div className="border rounded-lg p-4" id="claim-details-section">
+            <h3 className="text-lg font-semibold mb-4 text-primary">
+              {incidentType === 'Death' ? 'Form 124 - Death Claim Details' : 'Form 113 - Injury Claim Details'}
+            </h3>
             <Form113View irn={validIRN?.toString() || ''} onClose={onClose} />
           </div>
 
@@ -176,19 +173,15 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, inc
           <div className="border rounded-lg p-4">
             <h3 className="text-lg font-semibold mb-4 text-primary">Compensation Breakup</h3>
             {validIRN ? (
-              <CompensationBreakupDetailsView IRN={validIRN.toString()} DisplayIRN={formData.DisplayIRN} IncidentType="Injury" />
+              <CompensationBreakupDetailsView 
+                IRN={validIRN.toString()} 
+                DisplayIRN={formData.DisplayIRN} 
+                IncidentType={incidentType} 
+              />
             ) : (
               <p className="text-textSecondary">Compensation data cannot be loaded without a valid IRN.</p>
             )}
           </div>
-
-          {/* Download Button */}
-          <button
-            onClick={() => generatePDF('form6-content', 'Form6.pdf')}
-            className="btn bg-primary text-white hover:bg-primary-dark mt-4"
-          >
-            Download PDF
-          </button>
         </div>
       </div>
     </div>

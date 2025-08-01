@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
+import Form253HearingPendingForm7Submission from './253HearingPendingForm7Submission';
 
 interface ListPendingHearingsPublicProps {
   onClose: () => void;
@@ -34,6 +35,9 @@ const ListPendingHearingsPublic: React.FC<ListPendingHearingsPublicProps> = ({
   const [totalPages, setTotalPages] = useState(1);
   const [recordsPerPage] = useState(20);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [showForm253, setShowForm253] = useState(false);
+  const [selectedIRN, setSelectedIRN] = useState('');
+  const [selectedIncidentType, setSelectedIncidentType] = useState('');
 
   useEffect(() => {
     fetchHearingsList();
@@ -334,35 +338,51 @@ const ListPendingHearingsPublic: React.FC<ListPendingHearingsPublicProps> = ({
   const handleAction = (irn: string, setForHearing: string) => {
     const action = setForHearing === 'Not Scheduled' ? 'Schedule' : 'View';
     
+    // Get the hearing details to determine the type
+    const hearing = hearingsList.find(h => h.IRN === irn);
+    
     if (onSelectIRN) {
       onSelectIRN(irn, action);
     } else {
-      // Determine the URL based on the hearing type
-      let url = '';
-      const hearing = hearingsList.find(h => h.IRN === irn);
-      
       if (hearing) {
-        switch (hearing.Type) {
-          case 'TimeBarredForm11Submission':
-            url = '/dashboard/tribunal/timebarred-form11';
-            break;
-          case 'TimeBarredForm12Submission':
-            url = '/dashboard/tribunal/timebarred-form12';
-            break;
-          case 'Form7EmployerRejectedOtherReason':
-            url = '/dashboard/tribunal/form7-rejected';
-            break;
-          default:
-            url = '/dashboard/tribunal/hearing';
-        }
-        
-        if (url) {
-          window.location.href = `${url}?IRN=${irn}&Action=${action}`;
+        if (action === 'Schedule') {
+          // Handle scheduling based on hearing type
+          switch (hearing.Type) {
+            case 'TimeBarredForm11Submission':
+              // Load the same component for TimeBarredForm11Submission
+              setSelectedIRN(irn);
+              setSelectedIncidentType('Injury');
+              setShowForm253(true);
+              break;
+            case 'TimeBarredForm12Submission':
+              // Load the same component for TimeBarredForm12Submission
+              setSelectedIRN(irn);
+              setSelectedIncidentType('Death');
+              setShowForm253(true);
+              break;
+            case 'Form7EmployerRejectedOtherReason':
+              // Load Form253HearingPendingForm7Submission
+              setSelectedIRN(irn);
+              setSelectedIncidentType(hearing.Type === 'Death' ? 'Death' : 'Injury');
+              setShowForm253(true);
+              break;
+            default:
+              // For other types, use default behavior
+              window.location.href = `/dashboard/tribunal/hearing?IRN=${irn}&Action=${action}`;
+          }
+        } else {
+          // For 'View' action, use default behavior
+          window.location.href = `/dashboard/tribunal/hearing?IRN=${irn}&Action=${action}`;
         }
       }
     }
   };
 
+  const handleCloseForm253 = () => {
+    setShowForm253(false);
+    setSelectedIRN('');
+    setSelectedIncidentType('');
+  };
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -566,6 +586,15 @@ const ListPendingHearingsPublic: React.FC<ListPendingHearingsPublicProps> = ({
           )}
         </div>
       </div>
+
+      {/* Form 253 Modal */}
+      {showForm253 && (
+        <Form253HearingPendingForm7Submission 
+          irn={selectedIRN} 
+          incidentType={selectedIncidentType} 
+          onClose={handleCloseForm253} 
+        />
+      )}
     </div>
   );
 };
