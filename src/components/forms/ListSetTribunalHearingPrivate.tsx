@@ -573,4 +573,4 @@ const ListSetTribunalHearingPublic: React.FC<TribunalHearingPublicProps> = ({
   );
 };
 
-export default ListSetTribunalHearingPublic;
+export default ListSetTribunalHearingPrivate;
