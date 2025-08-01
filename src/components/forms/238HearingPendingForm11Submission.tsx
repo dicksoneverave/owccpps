@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import Form113View from './Form113View';
 import ListClaimDecisions from './ListClaimDecisions';
 import CompensationBreakupDetailsView from './CompensationBreakupDetailsView';
+import DocumentStatus from './DocumentStatus';
 
 interface Form238Props {
   irn: string;
@@ -17,6 +18,7 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, on
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({});
   const [validIRN, setValidIRN] = useState<number | null>(null);
+  const [showDocumentStatus, setShowDocumentStatus] = useState(false);
 
   useEffect(() => {
     const validateIRN = () => {
@@ -164,8 +166,31 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, on
               <p className="text-textSecondary">Compensation data cannot be loaded without a valid IRN.</p>
             )}
           </div>
+
+          {/* Section 4: Document Status */}
+          <div className="border rounded-lg p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-primary">Document Status</h3>
+              <button
+                onClick={() => setShowDocumentStatus(true)}
+                className="btn bg-primary text-white hover:bg-primary-dark text-sm"
+              >
+                View Document Status
+              </button>
+            </div>
+            <p className="text-textSecondary">Click the button above to view required and submitted documents for this claim.</p>
+          </div>
         </div>
       </div>
+
+      {/* Document Status Modal */}
+      {showDocumentStatus && validIRN && (
+        <DocumentStatus
+          irn={validIRN.toString()}
+          incidentType="Injury"
+          onClose={() => setShowDocumentStatus(false)}
+        />
+      )}
     </div>
   );
 };
