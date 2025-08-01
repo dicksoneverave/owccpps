@@ -37,15 +37,15 @@ const PrintHearingSetList: React.FC<PrintSetListAllProps> = ({ onClose }) => {
       // Fetch all pending hearings (both public and private)
       const { data: publicData, error: publicError } = await supabase
         .from('view_hearings_pending_public')
-        .select('*');
-        .eq('THSSSetForHearing', 'Scheduled')
+        .select('*')
+        .eq('THSSSetForHearing', 'Scheduled');
 
       if (publicError) throw publicError;
 
       const { data: privateData, error: privateError } = await supabase
         .from('view_hearings_pending_private')
-        .select('*');
-        .eq('THSSSetForHearing', 'Scheduled')
+        .select('*')
+        .eq('THSSSetForHearing', 'Scheduled');
 
       if (privateError) throw privateError;
 
