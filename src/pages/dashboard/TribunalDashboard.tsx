@@ -8,6 +8,7 @@ import PrintListPrivate from '../../components/forms/PrintListPrivate';
 import PrintListAll from '../../components/forms/PrintListAll';
 import SetTribunalHearing from '../../components/forms/SetTribunalHearing';
 import PrintHearingSetList from '../../components/forms/PrintHearingSetList';
+import ListSetTribunalHearingPublic from '../../components/forms/ListSetTribunalHearingPublic';
 
 const TribunalDashboard: React.FC = () => {
   const { profile } = useAuth();
@@ -19,6 +20,7 @@ const TribunalDashboard: React.FC = () => {
   const [showPrintListAll, setShowPrintListAll] = useState(false);
   const [showSetHearing, setShowSetHearing] = useState(false);
   const [showPrintHearingSetList, setShowPrintHearingSetList] = useState(false);
+  const [showTribunalHearingPublic, setShowTribunalHearingPublic] = useState(false);
   const [selectedIRN, setSelectedIRN] = useState<string | null>(null);
 
   const menuItems = {
@@ -86,6 +88,8 @@ const TribunalDashboard: React.FC = () => {
       setShowPrintHearingSetList(true);
     } else if (menu === 'Hearing' && item === 'Set Hearing') {
       setShowSetHearing(true);
+    } else if (menu === 'Hearing' && item === 'Tribunal Hearing (Public)') {
+      setShowTribunalHearingPublic(true);
     }
     
     setActiveMenu(null);
@@ -310,6 +314,14 @@ const TribunalDashboard: React.FC = () => {
       {showPrintHearingSetList && (
         <PrintHearingSetList
           onClose={() => setShowPrintHearingSetList(false)}
+        />
+      )}
+      
+      {/* Tribunal Hearing Public Modal */}
+      {showTribunalHearingPublic && (
+        <ListSetTribunalHearingPublic
+          onClose={() => setShowTribunalHearingPublic(false)}
+          onSelectIRN={handleSelectIRN}
         />
       )}
       
