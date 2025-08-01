@@ -113,7 +113,7 @@ const Form253HearingPendingForm7Submission: React.FC<Form253Props> = ({ irn, onC
       if (updateError) {
         throw updateError;
       }
-
+console.log('IRN:',validIRN);
       // 2. Insert into tribunalhearingoutcome table
       const { error: insertError } = await supabase
         .from('tribunalhearingoutcome')
