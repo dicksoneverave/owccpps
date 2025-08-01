@@ -133,7 +133,8 @@ console.log('IRN:',validIRN);
         .insert({
           THOIRN: validIRN,
           THORegion: form1112Data.IncidentRegion,
-          THONatureOfAccident: form1112Data.NatureExtentInjury
+          THONatureOfAccident: form1112Data.NatureExtentInjury,
+          THOEmplyer: workerEmployerData.CPPSID
         });
 
       if (insertError) {
