@@ -8,11 +8,10 @@ import CompensationBreakupDetailsView from './CompensationBreakupDetailsView';
 
 interface Form238Props {
   irn: string;
-  incidentType: string;
   onClose: () => void;
 }
 
-const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, incidentType, onClose }) => {
+const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, onClose }) => {
   const { profile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -41,22 +40,34 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, in
         setLoading(true);
         setError(null);
 
-        // Fetch form1112master to get DisplayIRN
+        // Fetch form1112master data to get worker details
         const { data: form1112Data, error: form1112Error } = await supabase
           .from('form1112master')
-          .select('DisplayIRN')
+          .select('*')
           .eq('IRN', validIRN)
-          .eq('IncidentType', 'Injury')
           .single();
 
         if (form1112Error) {
           throw form1112Error;
         }
 
+        // Fetch worker personal details
+        const { data: workerData, error: workerError } = await supabase
+          .from('workerpersonaldetails')
+          .select('*')
+          .eq('WorkerID', form1112Data.WorkerID)
+          .single();
+
+        if (workerError) {
+          throw workerError;
+        }
+
         setFormData({
-          DisplayIRN: form1112Data.DisplayIRN
+          ...form1112Data,
+          ...workerData
         });
       } catch (err: any) {
+        console.error('Error fetching form data:', err);
         setError(err.message || 'Failed to load form data');
       } finally {
         setLoading(false);
@@ -64,7 +75,7 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, in
     };
 
     fetchFormData();
-  }, [validIRN, incidentType]);
+  }, [validIRN]);
 
   if (error) {
     return (
@@ -76,7 +87,7 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, in
           </div>
           <p className="text-gray-700 mb-4">{error}</p>
           <div className="flex justify-end">
-            <button onClick={onClose} className="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary/90">
+            <button onClick={onClose} className="btn bg-primary text-white hover:bg-primary-dark">
               Close
             </button>
           </div>
@@ -91,7 +102,7 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, in
         <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl">
           <div className="flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
-            <p className="text-gray-700">Loading injury notification details...</p>
+            <p className="text-gray-700">Loading hearing details...</p>
           </div>
         </div>
       </div>
@@ -103,7 +114,7 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, in
       <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b sticky top-0 bg-white z-10">
           <h2 className="text-xl font-semibold text-gray-900">
-            247 - Form 17 Injury Notification
+            238 - Hearing Pending Form 11 Submission
             {formData.DisplayIRN && (
               <span className="ml-2 text-sm font-normal text-gray-600">
                 {formData.DisplayIRN}
@@ -120,9 +131,9 @@ const Form238HearingPendingForm11Submission: React.FC<Form238Props> = ({ irn, in
         </div>
 
         <div className="p-6 space-y-8">
-          {/* Section 1: Form 113 - Injury Claim Detail */}
+          {/* Section 1: Form 113 - Injury Claim Details */}
           <div className="border rounded-lg p-4" id="injuryclaims-section">
-            <h3 className="text-lg font-semibold mb-4 text-primary">Form 113 - Injury Claim Detail</h3>
+            <h3 className="text-lg font-semibold mb-4 text-primary">Form 113 - Injury Claim Details</h3>
             {validIRN ? (
               <Form113View irn={validIRN.toString()} onClose={onClose} />
             ) : (
