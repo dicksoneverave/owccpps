@@ -302,7 +302,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
               month: '2-digit',
               year: 'numeric'
             }) : 'N/A',
-            SetForHearing: item.THSSetForHearing || 'Not Scheduled',
+            SetForHearing: item.THSSetForHearing || 'Scheduled',
             Status: item.THSHearingStatus,
             Type: item.THSHearingType
           };
