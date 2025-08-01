@@ -146,7 +146,7 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
       // Build the main query
       // We need to join multiple tables to get all the required data
       const { data, error } = await supabase
-        .rpc('get_pending_hearings_public', {
+        .rpc('view_hearings_set_public', {
           p_limit: recordsPerPage,
           p_offset: start,
           p_search_irn: searchIRN,
