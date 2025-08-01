@@ -81,8 +81,8 @@ const TribunalDashboard: React.FC = () => {
       setShowPrintListPrivate(true);
     } else if (menu === 'Pre-Hearing' && item === 'Print List (All)') {
       setShowPrintListAll(true);
-    } else if (menu === 'Pre-Hearing' && item === 'Print List (All)') {
-      setPrintHearingSetList(true);
+    } else if (menu === 'Pre-Hearing' && item === 'Print Hearing Set List (All)') {
+      setShowPrintHearingSetList(true);
     } else if (menu === 'Hearing' && item === 'Set Hearing') {
       setShowSetHearing(true);
     }
