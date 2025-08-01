@@ -60,7 +60,7 @@ const PrintHearingSetList: React.FC<PrintSetListAllProps> = ({ onClose }) => {
           month: '2-digit',
           year: 'numeric'
         }) : 'N/A',
-        SetForHearing: item.THSSetForHearing || 'Scheduled',
+        SetForHearing: 'Scheduled',
         Status: item.THSHearingStatus,
         Type: item.THSHearingType
       }));
