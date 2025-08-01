@@ -53,9 +53,9 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
       
       // Get the count of matching records
       let countQuery = supabase
-        .from('view_hearings_set_public')
+        .from('view_hearings_pending_public')
         .select('*', { count: 'exact', head: true })
-        .eq('THSHearingStatus', 'HearingSet')
+        .eq('THSHearingStatus', 'Pending')
         //.eq('THSWorkerOrganizationType', 'Public');
 
       // Apply search filters if provided
@@ -143,187 +143,153 @@ const ListSetTribunalHearingPublic: React.FC<ListSetTribunalHearingPublicProps> 
       // Calculate pagination
       const start = (currentPage - 1) * recordsPerPage;
       
-      // Build the main query
-      // We need to join multiple tables to get all the required data
-      const { data, error } = await supabase
-        .rpc('view_hearings_set_public', {
-          p_limit: recordsPerPage,
-          p_offset: start,
-          p_search_irn: searchIRN,
-          p_search_first_name: searchFirstName,
-          p_search_last_name: searchLastName
-        });
-
-      if (error) {
-        // If the RPC function doesn't exist, fall back to a manual query
-        console.error('RPC error, falling back to manual query:', error);
+      // Query the view directly instead of using RPC
+      let query = supabase
+        .from('view_hearings_pending_public')
+        .select(`
+          IRN,
+          THSSubmissionDate,
+          THSSetForHearing,
+          THSHearingStatus,
+          THSHearingType
+        `)
+        .eq('THSHearingStatus', 'Pending')
+        .range(start, start + recordsPerPage - 1)
+        .order('THSSubmissionDate', { ascending: false });
+      
+      // Apply the same filters as the count query
+      if (searchIRN || searchFirstName || searchLastName) {
+        // We already have the filtered IRNs from the count query
+        // Reuse the same logic
+        let filteredIRNs: string[] = [];
         
-        // This is a complex query that joins multiple tables
-        // We'll need to do it in multiple steps
-        
-        // Step 1: Get the hearing schedule records
-        let query = supabase
-          .from('view_hearings_set_public')
-          .select(`
-            IRN,
-            THSSubmissionDate,
-            THSSetForHearing,
-            THSHearingStatus,
-            THSHearingType
-          `)
-          .eq('THSHearingStatus', 'HearingSet')
-         // .eq('THSWorkerOrganizationType', 'Public')
-          .range(start, start + recordsPerPage - 1)
-          .order('THSSubmissionDate', { ascending: false });
-        
-        // Apply the same filters as the count query
-        if (searchIRN || searchFirstName || searchLastName) {
-          // We already have the filtered IRNs from the count query
-          // Reuse the same logic
-          let filteredIRNs: string[] = [];
+        if (searchIRN) {
+          const { data: form1112Data } = await supabase
+            .from('form1112master')
+            .select('IRN')
+            .ilike('DisplayIRN', `%${searchIRN}%`);
           
-          if (searchIRN) {
-            const { data: form1112Data } = await supabase
-              .from('form1112master')
-              .select('IRN')
-              .ilike('DisplayIRN', `%${searchIRN}%`);
-            
-            if (form1112Data && form1112Data.length > 0) {
-              filteredIRNs = form1112Data.map(item => item.IRN);
-            }
-          }
-          
-          if (searchFirstName || searchLastName) {
-            let workerQuery = supabase
-              .from('workerpersonaldetails')
-              .select('WorkerID');
-            
-            if (searchFirstName) {
-              workerQuery = workerQuery.ilike('WorkerFirstName', `%${searchFirstName}%`);
-            }
-            
-            if (searchLastName) {
-              workerQuery = workerQuery.ilike('WorkerLastName', `%${searchLastName}%`);
-            }
-            
-            const { data: workerData } = await workerQuery;
-            
-            if (workerData && workerData.length > 0) {
-              const workerIDs = workerData.map(item => item.WorkerID);
-              
-              const { data: form1112Data } = await supabase
-                .from('form1112master')
-                .select('IRN')
-                .in('WorkerID', workerIDs);
-              
-              if (form1112Data && form1112Data.length > 0) {
-                const irns = form1112Data.map(item => item.IRN);
-                
-                // If we already have filtered IRNs from searchIRN, we need to find the intersection
-                if (filteredIRNs.length > 0) {
-                  filteredIRNs = filteredIRNs.filter(irn => irns.includes(irn));
-                } else {
-                  filteredIRNs = irns;
-                }
-              }
-            }
-          }
-          
-          if (filteredIRNs.length > 0) {
-            query = query.in('IRN', filteredIRNs);
-          } else {
-            // No matching IRNs found
-            setHearingsList([]);
-            setLoading(false);
-            return;
+          if (form1112Data && form1112Data.length > 0) {
+            filteredIRNs = form1112Data.map(item => item.IRN);
           }
         }
         
-        const { data: hearingData, error: hearingError } = await query;
+        if (searchFirstName || searchLastName) {
+          let workerQuery = supabase
+            .from('workerpersonaldetails')
+            .select('WorkerID');
+          
+          if (searchFirstName) {
+            workerQuery = workerQuery.ilike('WorkerFirstName', `%${searchFirstName}%`);
+          }
+          
+          if (searchLastName) {
+            workerQuery = workerQuery.ilike('WorkerLastName', `%${searchLastName}%`);
+          }
+          
+          const { data: workerData } = await workerQuery;
+          
+          if (workerData && workerData.length > 0) {
+            const workerIDs = workerData.map(item => item.WorkerID);
+            
+            const { data: form1112Data } = await supabase
+              .from('form1112master')
+              .select('IRN')
+              .in('WorkerID', workerIDs);
+            
+            if (form1112Data && form1112Data.length > 0) {
+              const irns = form1112Data.map(item => item.IRN);
+              
+              // If we already have filtered IRNs from searchIRN, we need to find the intersection
+              if (filteredIRNs.length > 0) {
+                filteredIRNs = filteredIRNs.filter(irn => irns.includes(irn));
+              } else {
+                filteredIRNs = irns;
+              }
+            }
+          }
+        }
         
-        if (hearingError) throw hearingError;
-        
-        if (!hearingData || hearingData.length === 0) {
+        if (filteredIRNs.length > 0) {
+          query = query.in('IRN', filteredIRNs);
+        } else {
+          // No matching IRNs found
           setHearingsList([]);
           setLoading(false);
           return;
         }
-        
-        // Step 2: Get the form1112master data for these IRNs
-        const irns = hearingData.map(item => item.IRN);
-        
-        const { data: form1112Data, error: form1112Error } = await supabase
-          .from('form1112master')
-          .select('IRN, DisplayIRN, WorkerID')
-          .in('IRN', irns);
-        
-        if (form1112Error) throw form1112Error;
-        
-        // Create a map of IRN to DisplayIRN and WorkerID
-        const form1112Map = new Map();
-        form1112Data?.forEach(item => {
-          form1112Map.set(item.IRN, {
-            DisplayIRN: item.DisplayIRN,
-            WorkerID: item.WorkerID
-          });
-        });
-        
-        // Step 3: Get the worker details for these WorkerIDs
-        const workerIDs = form1112Data?.map(item => item.WorkerID).filter(Boolean) || [];
-        
-        const { data: workerData, error: workerError } = await supabase
-          .from('workerpersonaldetails')
-          .select('WorkerID, WorkerFirstName, WorkerLastName')
-          .in('WorkerID', workerIDs);
-        
-        if (workerError) throw workerError;
-        
-        // Create a map of WorkerID to worker details
-        const workerMap = new Map();
-        workerData?.forEach(item => {
-          workerMap.set(item.WorkerID, {
-            FirstName: item.WorkerFirstName,
-            LastName: item.WorkerLastName
-          });
-        });
-        
-        // Step 4: Combine all the data
-        const formattedData = hearingData.map(item => {
-          const form1112 = form1112Map.get(item.IRN);
-          const worker = form1112 ? workerMap.get(form1112.WorkerID) : null;
-          
-          return {
-            IRN: item.IRN,
-            CRN: form1112?.DisplayIRN || 'N/A',
-            FirstName: worker?.FirstName || 'N/A',
-            LastName: worker?.LastName || 'N/A',
-            SubmissionDate: item.THSSubmissionDate ? new Date(item.THSSubmissionDate).toLocaleDateString('en-GB', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric'
-            }) : 'N/A',
-            SetForHearing: item.THSSetForHearing || 'Scheduled',
-            Status: item.THSHearingStatus,
-            Type: item.THSHearingType
-          };
-        });
-        
-        setHearingsList(formattedData);
-      } else {
-        // If the RPC function exists, use its results
-        const formattedData = data.map((item: any) => ({
-          IRN: item.irn,
-          CRN: item.crn,
-          FirstName: item.firstname,
-          LastName: item.lastname,
-          SubmissionDate: item.submissiondate,
-          SetForHearing: item.setforhearing || 'Scheduled',
-          Status: item.status,
-          Type: item.type
-        }));
-        
-        setHearingsList(formattedData);
       }
+      
+      const { data: hearingData, error: hearingError } = await query;
+      
+      if (hearingError) throw hearingError;
+      
+      if (!hearingData || hearingData.length === 0) {
+        setHearingsList([]);
+        setLoading(false);
+        return;
+      }
+      
+      // Step 2: Get the form1112master data for these IRNs
+      const irns = hearingData.map(item => item.IRN);
+      
+      const { data: form1112Data, error: form1112Error } = await supabase
+        .from('form1112master')
+        .select('IRN, DisplayIRN, WorkerID')
+        .in('IRN', irns);
+      
+      if (form1112Error) throw form1112Error;
+      
+      // Create a map of IRN to DisplayIRN and WorkerID
+      const form1112Map = new Map();
+      form1112Data?.forEach(item => {
+        form1112Map.set(item.IRN, {
+          DisplayIRN: item.DisplayIRN,
+          WorkerID: item.WorkerID
+        });
+      });
+      
+      // Step 3: Get the worker details for these WorkerIDs
+      const workerIDs = form1112Data?.map(item => item.WorkerID).filter(Boolean) || [];
+      
+      const { data: workerData, error: workerError } = await supabase
+        .from('workerpersonaldetails')
+        .select('WorkerID, WorkerFirstName, WorkerLastName')
+        .in('WorkerID', workerIDs);
+      
+      if (workerError) throw workerError;
+      
+      // Create a map of WorkerID to worker details
+      const workerMap = new Map();
+      workerData?.forEach(item => {
+        workerMap.set(item.WorkerID, {
+          FirstName: item.WorkerFirstName,
+          LastName: item.WorkerLastName
+        });
+      });
+      
+      // Step 4: Combine all the data
+      const formattedData = hearingData.map(item => {
+        const form1112 = form1112Map.get(item.IRN);
+        const worker = form1112 ? workerMap.get(form1112.WorkerID) : null;
+        
+        return {
+          IRN: item.IRN,
+          CRN: form1112?.DisplayIRN || 'N/A',
+          FirstName: worker?.FirstName || 'N/A',
+          LastName: worker?.LastName || 'N/A',
+          SubmissionDate: item.THSSubmissionDate ? new Date(item.THSSubmissionDate).toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+          }) : 'N/A',
+          SetForHearing: item.THSSetForHearing || 'Scheduled',
+          Status: item.THSHearingStatus,
+          Type: item.THSHearingType
+        };
+      });
+      
+      setHearingsList(formattedData);
     } catch (err: any) {
       console.error('Error fetching hearings list:', err);
       setError(err.message || 'Failed to load hearings list');
