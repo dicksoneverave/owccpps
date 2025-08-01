@@ -46,7 +46,7 @@ const PrintHearingSetList: React.FC<PrintSetListAllProps> = ({ onClose }) => {
       const { data: privateData, error: privateError } = await supabase
         .from('view_hearings_pending_private')
         .select('*')
-       // .eq('THSHearingStatus', 'HearingSet')
+       .eq('THSHearingStatus', 'HearingSet')
         .eq('THSSetForHearing', 'Scheduled');
 
       if (privateError) throw privateError;
