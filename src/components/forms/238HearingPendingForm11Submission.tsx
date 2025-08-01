@@ -135,7 +135,7 @@ console.log('WorkerID:',form1112Data.WorkerID);
           THOIRN: validIRN,
           THORegion: form1112Data.IncidentRegion,
           THONatureOfAccident: form1112Data.NatureExtentInjury,
-          THOEmplyer: workerEmployerData.CPPSID
+          THOEmployer: workerEmployerData.OrganizationName
         });
 
       if (insertError) {
