@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { X, Search } from 'lucide-react';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../context/AuthContext';
+import Form238HearingPendingForm11Submission from './238HearingPendingForm11Submission';
+import Form239HearingPendingForm12Submission from './239HearingPendngForm12Submission';
+import Form253HearingPendingForm7Submission from './253HearingPendingForm7Submission';
 
 interface ListPendingHearingsPrivateProps {
   onClose: () => void;
@@ -34,6 +37,10 @@ const ListPendingHearingsPrivate: React.FC<ListPendingHearingsPrivateProps> = ({
   const [totalPages, setTotalPages] = useState(1);
   const [recordsPerPage] = useState(20);
   const [totalRecords, setTotalRecords] = useState(0);
+  const [showForm238, setShowForm238] = useState(false);
+  const [showForm239, setShowForm239] = useState(false);
+  const [showForm253, setShowForm253] = useState(false);
+  const [selectedIRN, setSelectedIRN] = useState<string>('');
 
   useEffect(() => {
     fetchHearingsList();
@@ -332,33 +339,35 @@ const ListPendingHearingsPrivate: React.FC<ListPendingHearingsPrivateProps> = ({
   };
 
   const handleAction = (irn: string, setForHearing: string) => {
-    const action = setForHearing === 'Not Scheduled' ? 'Schedule' : 'View';
-    
     if (onSelectIRN) {
+      const action = setForHearing === 'Not Scheduled' ? 'Schedule' : 'View';
       onSelectIRN(irn, action);
     } else {
-      // Determine the URL based on the hearing type
-      let url = '';
-      const hearing = hearingsList.find(h => h.IRN === irn);
-      
-      if (hearing) {
-        switch (hearing.Type) {
-          case 'TimeBarredForm11Submission':
-            url = '/dashboard/tribunal/timebarred-form11';
-            break;
-          case 'TimeBarredForm12Submission':
-            url = '/dashboard/tribunal/timebarred-form12';
-            break;
-          case 'Form7EmployerRejectedOtherReason':
-            url = '/dashboard/tribunal/form7-rejected';
-            break;
-          default:
-            url = '/dashboard/tribunal/hearing';
-        }
+      if (setForHearing === 'Not Scheduled') {
+        // Schedule action - show appropriate form based on hearing type
+        const hearing = hearingsList.find(h => h.IRN === irn);
         
-        if (url) {
-          window.location.href = `${url}?IRN=${irn}&Action=${action}`;
+        if (hearing) {
+          setSelectedIRN(irn);
+          
+          switch (hearing.Type) {
+            case 'TimeBarredForm11Submission':
+              setShowForm238(true);
+              break;
+            case 'TimeBarredForm12Submission':
+              setShowForm239(true);
+              break;
+            case 'Form7EmployerRejectedOtherReason':
+              setShowForm253(true);
+              break;
+            default:
+              // For other types, you might want to show a default form or handle differently
+              console.log('Unknown hearing type:', hearing.Type);
+          }
         }
+      } else {
+        // View action - you can implement view logic here if needed
+        console.log('View action for IRN:', irn);
       }
     }
   };
@@ -566,6 +575,39 @@ const ListPendingHearingsPrivate: React.FC<ListPendingHearingsPrivateProps> = ({
           )}
         </div>
       </div>
+
+      {/* Form 238 Modal */}
+      {showForm238 && (
+        <Form238HearingPendingForm11Submission
+          irn={selectedIRN}
+          onClose={() => {
+            setShowForm238(false);
+            setSelectedIRN('');
+          }}
+        />
+      )}
+
+      {/* Form 239 Modal */}
+      {showForm239 && (
+        <Form239HearingPendingForm12Submission
+          irn={selectedIRN}
+          onClose={() => {
+            setShowForm239(false);
+            setSelectedIRN('');
+          }}
+        />
+      )}
+
+      {/* Form 253 Modal */}
+      {showForm253 && (
+        <Form253HearingPendingForm7Submission
+          irn={selectedIRN}
+          onClose={() => {
+            setShowForm253(false);
+            setSelectedIRN('');
+          }}
+        />
+      )}
     </div>
   );
 };
