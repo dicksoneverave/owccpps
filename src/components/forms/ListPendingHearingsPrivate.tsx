@@ -339,36 +339,31 @@ const ListPendingHearingsPrivate: React.FC<ListPendingHearingsPrivateProps> = ({
   };
 
   const handleAction = (irn: string, setForHearing: string) => {
-    if (onSelectIRN) {
-      const action = setForHearing === 'Not Scheduled' ? 'Schedule' : 'View';
-      onSelectIRN(irn, action);
-    } else {
-      if (setForHearing === 'Not Scheduled') {
-        // Schedule action - show appropriate form based on hearing type
-        const hearing = hearingsList.find(h => h.IRN === irn);
+    if (setForHearing === 'Not Scheduled') {
+      // Schedule action - show appropriate form based on hearing type
+      const hearing = hearingsList.find(h => h.IRN === irn);
+      
+      if (hearing) {
+        setSelectedIRN(irn);
         
-        if (hearing) {
-          setSelectedIRN(irn);
-          
-          switch (hearing.Type) {
-            case 'TimeBarredForm11Submission':
-              setShowForm238(true);
-              break;
-            case 'TimeBarredForm12Submission':
-              setShowForm239(true);
-              break;
-            case 'Form7EmployerRejectedOtherReason':
-              setShowForm253(true);
-              break;
-            default:
-              // For other types, you might want to show a default form or handle differently
-              console.log('Unknown hearing type:', hearing.Type);
-          }
+        switch (hearing.Type) {
+          case 'TimeBarredForm11Submission':
+            setShowForm238(true);
+            break;
+          case 'TimeBarredForm12Submission':
+            setShowForm239(true);
+            break;
+          case 'Form7EmployerRejectedOtherReason':
+            setShowForm253(true);
+            break;
+          default:
+            // For other types, you might want to show a default form or handle differently
+            console.log('Unknown hearing type:', hearing.Type);
         }
-      } else {
-        // View action - you can implement view logic here if needed
-        console.log('View action for IRN:', irn);
       }
+    } else {
+      // View action - you can implement view logic here if needed
+      console.log('View action for IRN:', irn);
     }
   };
 
