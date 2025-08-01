@@ -53,7 +53,7 @@ const ListSetTribunalHearingPrivate: React.FC<TribunalHearingPrivateProps> = ({
       
       // Get the count of matching records
       let countQuery = supabase
-        .from('view_hearings_set_public')
+        .from('view_hearings_set_private')
         .select('*', { count: 'exact', head: true });
        // .eq('THSHearingStatus', 'Pending')
         //.eq('THSWorkerOrganizationType', 'Public');
@@ -145,7 +145,7 @@ const ListSetTribunalHearingPrivate: React.FC<TribunalHearingPrivateProps> = ({
       
       // Query the view directly instead of using RPC
       let query = supabase
-        .from('view_hearings_set_public')
+        .from('view_hearings_set_private')
         .select(`
           IRN,
           THSSubmissionDate,
@@ -539,7 +539,7 @@ const ListSetTribunalHearingPrivate: React.FC<TribunalHearingPrivateProps> = ({
 
       {/* Form 238 Modal */}
       {showForm238 && (
-        <Form238HearingForm11SubmissionPublic
+        <Form238HearingForm11SubmissionPrivate
           irn={selectedIRN}
           onClose={() => {
             setShowForm238(false);
@@ -550,7 +550,7 @@ const ListSetTribunalHearingPrivate: React.FC<TribunalHearingPrivateProps> = ({
 
       {/* Form 239 Modal */}
       {showForm239 && (
-        <Form239HearingForm12SubmissionPublic
+        <Form239HearingForm12SubmissionPrivate
           irn={selectedIRN}
           onClose={() => {
             setShowForm239(false);
@@ -561,7 +561,7 @@ const ListSetTribunalHearingPrivate: React.FC<TribunalHearingPrivateProps> = ({
 
       {/* Form 253 Modal */}
       {showForm253 && (
-        <Form253HearingForm7SubmissionPublic
+        <Form253HearingForm7SubmissionPrivate
           irn={selectedIRN}
           onClose={() => {
             setShowForm253(false);
